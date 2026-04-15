@@ -3,69 +3,63 @@ from __future__ import annotations
 import json
 import os
 import sys
-from http.server import BaseHTTPRequestHandler
+
+from flask import Flask, request, jsonify
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from api.auth import check_auth
 from orchestrator.build_context import build_context
 from orchestrator.generate_insights import generate_insights
 
+app = Flask(__name__)
 
-class handler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        secret = os.environ.get("TESORO_SECRET", "")
-        if secret and not check_auth(dict(self.headers), secret):
-            self._respond(401, {"error": "Unauthorized"})
-            return
 
-        try:
-            length = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(length)
-            payload = json.loads(body)
+@app.route("/api/insights", methods=["POST", "OPTIONS"])
+def handle_insights():
+    if request.method == "OPTIONS":
+        return _cors_response()
 
-            analytics = payload.get("analytics", {})
-            user_profile = payload.get("user_profile", {})
+    secret = os.environ.get("TESORO_SECRET", "")
+    if secret and not check_auth(dict(request.headers), secret):
+        return jsonify({"error": "Unauthorized"}), 401
 
-            if not analytics:
-                self._respond(400, {"error": "No analytics data provided"})
-                return
+    try:
+        payload      = request.get_json(force=True)
+        analytics    = payload.get("analytics", {})
+        user_profile = payload.get("user_profile", {})
 
-            context = build_context(
-                user_profile=user_profile,
-                metric_results={
-                    "summary": analytics.get("summary", {}),
-                    "spend_by_category": analytics.get("spend_by_category", {}),
-                },
-                anomaly_results=analytics.get("anomalies", []),
-                recurring_results=analytics.get("recurring", []),
-            )
+        if not analytics:
+            return jsonify({"error": "No analytics data provided"}), 400
 
-            result = generate_insights(context)
-            self._respond(200, result)
+        context = build_context(
+            user_profile=user_profile,
+            metric_results={
+                "summary": analytics.get("summary", {}),
+                "spend_by_category": analytics.get("spend_by_category", {}),
+            },
+            anomaly_results=analytics.get("anomalies", []),
+            recurring_results=analytics.get("recurring", []),
+        )
 
-        except json.JSONDecodeError as e:
-            self._respond(502, {"error": f"Model returned invalid JSON: {str(e)}"})
-        except Exception as e:
-            self._respond(500, {"error": str(e)})
+        result = generate_insights(context)
+        return jsonify(result)
 
-    def do_OPTIONS(self):
-        self.send_response(204)
-        self._cors_headers()
-        self.end_headers()
+    except json.JSONDecodeError as e:
+        return jsonify({"error": f"Model returned invalid JSON: {str(e)}"}), 502
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    def _cors_headers(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-    def _respond(self, status: int, body: dict):
-        payload = json.dumps(body, default=str).encode()
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(payload)))
-        self._cors_headers()
-        self.end_headers()
-        self.wfile.write(payload)
+def _cors_response():
+    r = jsonify({})
+    r.headers["Access-Control-Allow-Origin"]  = "*"
+    r.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    r.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return r, 204
 
-    def log_message(self, format, *args):
-        pass
+
+@app.after_request
+def add_cors(response):
+    response.headers["Access-Control-Allow-Origin"]  = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response

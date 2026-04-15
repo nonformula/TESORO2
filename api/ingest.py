@@ -1,16 +1,17 @@
 from __future__ import annotations
 
 import io
-import json
 import re
 import sys
 import os
-from http.server import BaseHTTPRequestHandler
 
 import pandas as pd
+from flask import Flask, request, jsonify
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from api.auth import check_auth
+
+app = Flask(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -261,75 +262,35 @@ def normalize_csv(csv_bytes: bytes, filename: str) -> list[dict]:
 # Vercel handler
 # ---------------------------------------------------------------------------
 
-class handler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        secret = os.environ.get("TESORO_SECRET", "")
-        if secret and not check_auth(dict(self.headers), secret):
-            self._respond(401, {"error": "Unauthorized"})
-            return
+@app.route("/api/ingest", methods=["POST", "OPTIONS"])
+def handle_ingest():
+    if request.method == "OPTIONS":
+        return _cors_response()
 
-        try:
-            content_type = self.headers.get("Content-Type", "")
-            length = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(length)
+    secret = os.environ.get("TESORO_SECRET", "")
+    if secret and not check_auth(dict(request.headers), secret):
+        return jsonify({"error": "Unauthorized"}), 401
 
-            if "multipart/form-data" in content_type:
-                # Parse boundary
-                boundary = content_type.split("boundary=")[-1].encode()
-                parts = body.split(b"--" + boundary)
-                all_transactions = []
+    try:
+        payload  = request.get_json(force=True)
+        filename = payload.get("filename", "upload.csv")
+        csv_data = payload.get("data", "").encode()
+        transactions = normalize_csv(csv_data, filename)
+        return jsonify({"transactions": transactions, "count": len(transactions)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-                for part in parts[1:]:
-                    if part.strip() in (b"", b"--"):
-                        continue
-                    header_end = part.find(b"\r\n\r\n")
-                    if header_end == -1:
-                        continue
-                    headers_raw = part[:header_end].decode(errors="replace")
-                    file_data = part[header_end + 4:].rstrip(b"\r\n--")
 
-                    filename = "upload.csv"
-                    fn_match = re.search(r'filename="([^"]+)"', headers_raw)
-                    if fn_match:
-                        filename = fn_match.group(1)
+def _cors_response():
+    r = jsonify({})
+    r.headers["Access-Control-Allow-Origin"]  = "*"
+    r.headers["Access-Control-Allow-Methods"] = "POST, OPTIONS"
+    r.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return r, 204
 
-                    try:
-                        transactions = normalize_csv(file_data, filename)
-                        all_transactions.extend(transactions)
-                    except Exception as e:
-                        pass  # skip unreadable files
 
-                self._respond(200, {"transactions": all_transactions, "count": len(all_transactions)})
-
-            else:
-                # JSON body with base64 or raw — expect {"filename": ..., "data": ...}
-                payload = json.loads(body)
-                filename = payload.get("filename", "upload.csv")
-                csv_data = payload.get("data", "").encode()
-                transactions = normalize_csv(csv_data, filename)
-                self._respond(200, {"transactions": transactions, "count": len(transactions)})
-
-        except Exception as e:
-            self._respond(500, {"error": str(e)})
-
-    def do_OPTIONS(self):
-        self.send_response(204)
-        self._cors_headers()
-        self.end_headers()
-
-    def _cors_headers(self):
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
-        self.send_header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-
-    def _respond(self, status: int, body: dict):
-        payload = json.dumps(body, default=str).encode()
-        self.send_response(status)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(payload)))
-        self._cors_headers()
-        self.end_headers()
-        self.wfile.write(payload)
-
-    def log_message(self, format, *args):
-        pass
+@app.after_request
+def add_cors(response):
+    response.headers["Access-Control-Allow-Origin"]  = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
