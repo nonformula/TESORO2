@@ -1,4 +1,7 @@
 {
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": "public",
   "rewrites": [
     { "source": "/", "destination": "/public/login.html" },
     { "source": "/login", "destination": "/public/login.html" },
