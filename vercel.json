@@ -5,9 +5,6 @@
     { "source": "/upload", "destination": "/public/upload.html" },
     { "source": "/dashboard", "destination": "/public/dashboard.html" }
   ],
-  "functions": {
-    "api/*.py": {}
-  },
   "headers": [
     {
       "source": "/api/(.*)",
