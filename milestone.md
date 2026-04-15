@@ -77,24 +77,35 @@ At the start of each new Claude session, read this file to catch up on current b
 - Mastro panel: royal_clothes1.png at full opacity, no color overlay
 - `--indigo: #1D3B6F` added as new design token
 
-## Current Build State
-**All milestones complete.** App is ready to deploy.
+## Milestone 5 — Vercel Deployment
+**Date:** 2026-04-15
+**Status:** ✅ Complete
 
-### To deploy to Vercel:
-1. `npm i -g vercel` (if not installed)
-2. `vercel link` (link to Vercel project)
-3. Set env vars:
-   - `vercel env add TESORO_PASSWORD`
-   - `vercel env add TESORO_SECRET`
-   - `vercel env add ANTHROPIC_API_KEY`
-4. `vercel --prod`
+### What was done
+- Initialized git repo and pushed to https://github.com/nonformula/TESORO2.git
+- Converted all `api/*.py` handlers from `BaseHTTPRequestHandler` to Flask WSGI apps — required by current Vercel Python runtime
+- Added `flask` to `requirements.txt`
+- Fixed `vercel.json`: removed invalid `runtime` key, fixed malformed structure, added `framework: null`, `buildCommand: ""`, `outputDirectory: "public"`, corrected rewrite paths (removed `/public/` prefix)
+- Fixed `generate_insights.py`: schema filename was `insight_output.json` → corrected to `insights_output.json`
+- Fixed `upload.js`: analyze step now fires automatically after ingest (no manual button click required)
+- Fixed `upload.js`: removed `checkAnalyzeReady()` gating logic
+- Env vars set via Vercel dashboard (Settings → Environment Variables): `TESORO_PASSWORD`, `TESORO_SECRET`, `ANTHROPIC_API_KEY`
+
+### Current Build State
+**Deployed to Vercel production.** Env vars pending confirmation — password auth being tested.
 
 ### Known issues / watch items
-- None currently
+- Mastro insights flow untested end-to-end on production (schema bug was fixed, needs live test)
+- Local dev still uses `python3 dev_server.py` on port 3003 — unaffected by Vercel changes
 
 ---
 
-## Next Session: If adding features
+## Next Steps
+- Confirm password auth works on production after env vars are set
+- Test full upload → analyze → Mastro flow on production
+- Commit milestone.md and any remaining changes
+
+## Future Features
 Common next steps:
 - Add property/mortgage card (home value input + mortgage CSV)
 - Add net worth timeline chart
