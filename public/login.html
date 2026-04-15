@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div class="login-page">
+  <div class="login-bg"></div>
+
+  <div class="login-box">
+    <div class="login-logo-wrap">
+      <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="Tesoro" class="login-logo-icon" />
+      <span class="login-logo-text">Tesoro</span>
+    </div>
+
+    <p class="login-tagline">Find Your Treasure</p>
+
+    <form id="loginForm" autocomplete="off">
+      <input
+        type="password"
+        id="passwordInput"
+        class="login-field"
+        placeholder="Enter your password"
+        autofocus
+        required
+      />
+      <button type="submit" class="login-btn" id="loginBtn">Enter</button>
+    </form>
+
+    <p class="login-error" id="loginError"></p>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+</body>
+</html>

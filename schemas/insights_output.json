@@ -1,0 +1,66 @@
+{
+  "type": "object",
+  "properties": {
+    "insights": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "insight_type": {
+            "type": "string",
+            "enum": [
+              "cash_flow",
+              "spending_pattern",
+              "recurring_charge",
+              "anomaly",
+              "savings_opportunity",
+              "risk_flag",
+              "behavioral_pattern",
+              "forecast",
+              "debt_pattern"
+            ]
+          },
+          "summary": { "type": "string" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "numerical_basis": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "behavioral_interpretation": { "type": "string" },
+          "recommendation": { "type": "string" },
+          "confidence": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high"]
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": ["none", "low", "medium", "high"]
+          }
+        },
+        "required": [
+          "title",
+          "insight_type",
+          "summary",
+          "evidence",
+          "numerical_basis",
+          "behavioral_interpretation",
+          "recommendation",
+          "confidence",
+          "priority",
+          "risk_level"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["insights"],
+  "additionalProperties": false
+}

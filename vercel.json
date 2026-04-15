@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/public/login.html" },
+    { "source": "/login", "destination": "/public/login.html" },
+    { "source": "/upload", "destination": "/public/upload.html" },
+    { "source": "/dashboard", "destination": "/public/dashboard.html" }
+  ],
+  "functions": {
+    "api/*.py": { "runtime": "python3.12" }
+  },
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" }
+      ]
+    }
+  ]
+}

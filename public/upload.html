@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro — Import</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div class="upload-page">
+
+  <header class="upload-header">
+    <div class="logo">
+      <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" />
+      <span class="logo-text">Tesoro</span>
+    </div>
+    <a href="/dashboard.html" class="dash-upload-link" id="skipToDash" style="display:none">
+      View dashboard →
+    </a>
+  </header>
+
+  <main class="upload-main">
+    <h1 class="upload-title">Import your data</h1>
+    <p class="upload-desc">
+      Upload CSV exports from your bank, investment, credit card, or retirement accounts.
+      Your data stays in your browser — nothing is stored on our servers.
+    </p>
+
+    <div class="upload-sources">
+      <div class="upload-source-chip">🏦 Bank</div>
+      <div class="upload-source-chip">💳 Credit Card</div>
+      <div class="upload-source-chip">📈 Investment</div>
+      <div class="upload-source-chip">🔐 401k / IRA</div>
+    </div>
+
+    <div class="upload-zone" id="dropZone">
+      <div class="upload-zone-icon">↑</div>
+      <p class="upload-zone-label">Drop CSV files here</p>
+      <p class="upload-zone-hint">or click to browse</p>
+      <input type="file" id="fileInput" class="upload-file-input" accept=".csv,.CSV" multiple />
+    </div>
+
+    <div class="upload-file-list" id="fileList"></div>
+
+    <p class="upload-status" id="uploadStatus"></p>
+
+    <button class="upload-analyze-btn" id="analyzeBtn">
+      Analyze my finances →
+    </button>
+  </main>
+
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/upload.js"></script>
+</body>
+</html>

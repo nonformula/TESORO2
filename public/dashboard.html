@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="dash-nav">
+  <div class="logo">
+    <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" />
+    <span class="logo-text">Tesoro</span>
+  </div>
+  <div class="dash-nav-right">
+    <a href="/upload.html" class="dash-upload-link">+ Import data</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="dashboard-grid">
+
+    <!-- ── LEFT COLUMN ─────────────────────────────── -->
+    <div class="col-left">
+
+      <!-- Hero card -->
+      <div class="card card--crimson hero-card">
+        <div class="card-art-bg"></div>
+        <div class="card-art-overlay"></div>
+        <div class="card-inner">
+          <p class="hero-date" id="heroDate"></p>
+          <p class="hero-greeting">Good morning.</p>
+          <p class="hero-label">Today's Number</p>
+          <p class="hero-number" id="heroNumber">—</p>
+          <p class="hero-subtitle" id="heroSubtitle">Import your data to see your financial picture.</p>
+        </div>
+      </div>
+
+      <!-- Spending insight card -->
+      <div class="card card--gold spending-card">
+        <div class="card-inner">
+          <p class="card-label" id="spendingLabel">Top Category</p>
+          <p class="spending-amount" id="spendingAmount">—</p>
+          <div class="spending-cat-row">
+            <span class="spending-merchant" id="spendingMerchant">Upload data to see insights</span>
+            <span class="spending-icon" id="spendingIcon">✕</span>
+          </div>
+          <p class="spending-note" id="spendingNote"></p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── CENTER COLUMN ───────────────────────────── -->
+    <div class="col-center">
+
+      <!-- Investment / portfolio card -->
+      <div class="card card--forest investment-card">
+        <div class="card-inner">
+          <p class="card-label">Investments</p>
+          <p class="investment-return" id="investReturn">—</p>
+          <p class="investment-sublabel" id="investLabel">Spending by category</p>
+          <div class="chart-wrap">
+            <canvas id="portfolioChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recurring charges card -->
+      <div class="card card--indigo health-card">
+        <div class="card-inner">
+          <p class="card-label">Recurring</p>
+          <p class="health-amount" id="healthAmount">—</p>
+          <p class="health-subtitle" id="healthSubtitle">Monthly charges</p>
+          <div class="bar-chart-wrap">
+            <canvas id="recurringChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cash flow summary -->
+      <div class="card card--dark">
+        <div class="card-inner">
+          <p class="card-label">Cash Flow</p>
+          <div class="metric-row">
+            <div class="metric-item">
+              <p class="metric-value" id="metricIncome">—</p>
+              <p class="metric-label">Income</p>
+            </div>
+            <div class="metric-item">
+              <p class="metric-value" id="metricSpend">—</p>
+              <p class="metric-label">Spend</p>
+            </div>
+            <div class="metric-item">
+              <p class="metric-value text-gold" id="metricSavings">—</p>
+              <p class="metric-label">Saved</p>
+            </div>
+            <div class="metric-item">
+              <p class="metric-value text-slate" id="metricRate">—</p>
+              <p class="metric-label">Rate</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── RIGHT COLUMN — Mastro ───────────────────── -->
+    <div class="col-right">
+      <div class="card card--navy mastro-card">
+        <div class="card-art-bg"></div>
+        <div class="card-art-overlay"></div>
+        <div class="card-inner">
+          <p class="mastro-subtitle">Strategy</p>
+          <h2 class="mastro-title">Ask<br/>Mastro</h2>
+
+          <div class="mastro-input-wrap">
+            <input
+              type="text"
+              id="mastroInput"
+              class="mastro-input"
+              placeholder="Ask me anything…"
+            />
+            <button class="mastro-send" id="mastroSend">Ask</button>
+          </div>
+
+          <div id="mastroInsights" class="insight-list">
+            <p style="font-size:12px;opacity:0.25;padding:6px 0;letter-spacing:0.04em">
+              Insights appear here after analysis.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/mastro.js"></script>
+</body>
+</html>
