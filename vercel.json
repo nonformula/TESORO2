@@ -5,13 +5,13 @@
     { "source": "/upload", "destination": "/public/upload.html" },
     { "source": "/dashboard", "destination": "/public/dashboard.html" }
   ],
-"headers": [
-    {
-      "source": "/api/(.*)",
-      "functions": {
+  "functions": {
     "api/*.py": {}
   },
   "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
         { "key": "X-Content-Type-Options", "value": "nosniff" },
         { "key": "X-Frame-Options", "value": "DENY" }
       ]
