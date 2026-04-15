@@ -5,10 +5,7 @@
     { "source": "/upload", "destination": "/public/upload.html" },
     { "source": "/dashboard", "destination": "/public/dashboard.html" }
   ],
-  "functions": {
-    "api/*.py": { "runtime": "python3.12" }
-  },
-  "headers": [
+"headers": [
     {
       "source": "/api/(.*)",
       "headers": [
