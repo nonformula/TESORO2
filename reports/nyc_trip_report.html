@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NYC Trip Report — Tesoro</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap">
+  <style>
+    :root {
+      --crimson: #A33030;
+      --cream: #F5EDD9;
+      --navy: #06042A;
+      --gold: #D4B554;
+      --orange: #F05A28;
+      --slate-blue: #5B9EC9;
+      --near-black: #1A1A1A;
+      --indigo: #1D3B6F;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--cream);
+      color: var(--near-black);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    /* ── Cover header ── */
+    .cover {
+      background: var(--navy);
+      color: var(--cream);
+      padding: 40px 48px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .cover-logo {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: 10px;
+    }
+
+    .cover-title {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+
+    .cover-subtitle {
+      font-size: 13px;
+      color: var(--gold);
+      margin-top: 6px;
+      letter-spacing: 0.04em;
+    }
+
+    .cover-meta {
+      text-align: right;
+      font-size: 11px;
+      opacity: 0.5;
+      line-height: 1.8;
+    }
+
+    /* ── Summary bar ── */
+    .summary-bar {
+      background: var(--crimson);
+      color: var(--cream);
+      padding: 20px 48px;
+      display: flex;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .summary-label {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+
+    .summary-value {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .summary-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(245,237,217,0.2);
+    }
+
+    /* ── Body layout ── */
+    .body {
+      padding: 36px 48px 48px;
+    }
+
+    /* ── Section heading ── */
+    .section-heading {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      font-weight: 600;
+      margin-bottom: 12px;
+      margin-top: 32px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(163,48,48,0.15);
+    }
+
+    /* ── Category cards ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .card {
+      border-radius: 8px;
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-flights  { background: var(--navy); color: var(--cream); }
+    .card-hotel    { background: var(--indigo); color: var(--cream); }
+    .card-dining   { background: var(--gold); color: var(--near-black); }
+    .card-transport{ background: var(--near-black); color: var(--cream); }
+    .card-events   { background: var(--crimson); color: var(--cream); }
+
+    .card-label {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.65;
+    }
+
+    .card-amount {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+
+    .card-pct {
+      font-size: 10px;
+      opacity: 0.6;
+      margin-top: 2px;
+    }
+
+    /* ── Detail tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    thead tr {
+      background: transparent;
+    }
+
+    thead th {
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #888;
+      font-weight: 500;
+      text-align: left;
+      padding: 6px 8px;
+      border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+
+    thead th.right { text-align: right; }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+
+    tbody td {
+      padding: 8px 8px;
+      color: var(--near-black);
+    }
+
+    tbody td.right {
+      text-align: right;
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    tbody td.date {
+      color: #888;
+      font-size: 11px;
+      white-space: nowrap;
+      width: 90px;
+    }
+
+    tbody td.merchant {
+      font-weight: 500;
+    }
+
+    tbody td.note {
+      color: #999;
+      font-size: 11px;
+    }
+
+    .subtotal-row td {
+      border-top: 1px solid rgba(0,0,0,0.1);
+      padding-top: 10px;
+      font-weight: 600;
+      font-size: 12px;
+    }
+
+    /* ── Grand total ── */
+    .grand-total {
+      background: var(--navy);
+      color: var(--cream);
+      border-radius: 8px;
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 32px;
+    }
+
+    .grand-total-label {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+
+    .grand-total-amount {
+      font-size: 28px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--gold);
+    }
+
+    /* ── Notes ── */
+    .notes {
+      margin-top: 28px;
+      padding: 16px 20px;
+      background: rgba(163,48,48,0.06);
+      border-left: 3px solid var(--crimson);
+      border-radius: 0 6px 6px 0;
+    }
+
+    .notes-title {
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .notes ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .notes li {
+      font-size: 11px;
+      color: #555;
+      padding-left: 12px;
+      position: relative;
+    }
+
+    .notes li::before {
+      content: '–';
+      position: absolute;
+      left: 0;
+      color: var(--crimson);
+    }
+
+    /* ── Footer ── */
+    .footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      font-size: 10px;
+      color: #aaa;
+    }
+
+    @media print {
+      body { background: white; }
+      @page { margin: 0; size: letter; }
+      .cover { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .summary-bar { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .grand-total { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .notes { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cover -->
+  <div class="cover">
+    <div>
+      <div class="cover-logo">Tesoro · Expense Report</div>
+      <div class="cover-title">New York City<br>Business Trip</div>
+      <div class="cover-subtitle">March 27 – April 1, 2026</div>
+    </div>
+    <div class="cover-meta">
+      <div>Antonio Cicarelli</div>
+      <div>Generated April 14, 2026</div>
+      <div>Source: Citi Card-1188 · Wells Fargo</div>
+    </div>
+  </div>
+
+  <!-- Summary bar -->
+  <div class="summary-bar">
+    <div class="summary-item">
+      <span class="summary-label">Trip Total</span>
+      <span class="summary-value">$2,142.14</span>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-item">
+      <span class="summary-label">Duration</span>
+      <span class="summary-value">6 days</span>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-item">
+      <span class="summary-label">Avg / Day</span>
+      <span class="summary-value">$357.02</span>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-item">
+      <span class="summary-label">Largest Single Charge</span>
+      <span class="summary-value">$489.75</span>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-item">
+      <span class="summary-label">Transactions</span>
+      <span class="summary-value">22</span>
+    </div>
+  </div>
+
+  <div class="body">
+
+    <!-- Category cards -->
+    <div class="section-heading">Breakdown by Category</div>
+    <div class="cards">
+      <div class="card card-flights">
+        <span class="card-label">Flights</span>
+        <span class="card-amount">$576.44</span>
+        <span class="card-pct">26.9% of trip</span>
+      </div>
+      <div class="card card-hotel">
+        <span class="card-label">Hotel</span>
+        <span class="card-amount">$722.55</span>
+        <span class="card-pct">33.7% of trip</span>
+      </div>
+      <div class="card card-dining">
+        <span class="card-label">Dining</span>
+        <span class="card-amount">$267.80</span>
+        <span class="card-pct">12.5% of trip</span>
+      </div>
+      <div class="card card-transport">
+        <span class="card-label">Transport</span>
+        <span class="card-amount">$195.35</span>
+        <span class="card-pct">9.1% of trip</span>
+      </div>
+      <div class="card card-events">
+        <span class="card-label">Events</span>
+        <span class="card-amount">$380.00</span>
+        <span class="card-pct">17.7% of trip</span>
+      </div>
+    </div>
+
+    <!-- Flights -->
+    <div class="section-heading">Flights — United Airlines</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th class="right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="date">Mar 14, 2026</td>
+          <td class="merchant">United Airlines — Base Fare</td>
+          <td class="right">$489.75</td>
+        </tr>
+        <tr>
+          <td class="date">Mar 14, 2026</td>
+          <td class="merchant">United Airlines — Fee</td>
+          <td class="right">$38.69</td>
+        </tr>
+        <tr>
+          <td class="date">Mar 14, 2026</td>
+          <td class="merchant">United Airlines — Fee</td>
+          <td class="right">$24.00</td>
+        </tr>
+        <tr>
+          <td class="date">Mar 14, 2026</td>
+          <td class="merchant">United Airlines — Fee</td>
+          <td class="right">$24.00</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td></td>
+          <td>Subtotal</td>
+          <td class="right">$576.44</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Hotel -->
+    <div class="section-heading">Hotel — Ink 48, New York NY</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th class="right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="date">Mar 27, 2026</td>
+          <td class="merchant">Ink 48 Hotel — Check-in / Deposit</td>
+          <td class="right">$285.23</td>
+        </tr>
+        <tr>
+          <td class="date">Apr 1, 2026</td>
+          <td class="merchant">Ink 48 Hotel — Room Charges</td>
+          <td class="right">$427.52</td>
+        </tr>
+        <tr>
+          <td class="date">Apr 1, 2026</td>
+          <td class="merchant">Ink 48 Hotel — Resort/Hotel Fee</td>
+          <td class="right">$9.80</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td></td>
+          <td>Subtotal</td>
+          <td class="right">$722.55</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Dining -->
+    <div class="section-heading">Dining</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Merchant</th>
+          <th>Location</th>
+          <th class="right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="date">Mar 30, 2026</td>
+          <td class="merchant">Starbucks</td>
+          <td class="note">TPA — Departure</td>
+          <td class="right">$16.08</td>
+        </tr>
+        <tr>
+          <td class="date">Mar 30, 2026</td>
+          <td class="merchant">Dunkin'</td>
+          <td class="note">Newark Airport</td>
+          <td class="right">$4.69</td>
+        </tr>
+        <tr>
+          <td class="date">Mar 30, 2026</td>
+          <td class="merchant">Cafe 53</td>
+          <td class="note">New York, NY</td>
+          <td class="right">$16.97</td>
+        </tr>
+        <tr>
+          <td class="date">Mar 30, 2026</td>
+          <td class="merchant">TST* Hudson Vu Rooftop</td>
+          <td class="note">New York, NY</td>
+          <td class="right">$91.61</td>
+        </tr>
+        <tr>
+          <td class="date">Mar 31, 2026</td>
+          <td class="merchant">TST* Rice x Beans</td>
+          <td class="note">New York, NY</td>
+          <td class="right">$79.69</td>
+        </tr>
+        <tr>
+          <td class="date">Mar 31, 2026</td>
+          <td class="merchant">Westville Market Place</td>
+          <td class="note">New York, NY</td>
+          <td class="right">$7.90</td>
+        </tr>
+        <tr>
+          <td class="date">Mar 31, 2026</td>
+          <td class="merchant">Cafe Farmers Market</td>
+          <td class="note">New York, NY</td>
+          <td class="right">$6.78</td>
+        </tr>
+        <tr>
+          <td class="date">Apr 1, 2026</td>
+          <td class="merchant">Romeo &amp; Juliet Coffee</td>
+          <td class="note">New York, NY</td>
+          <td class="right">$5.03</td>
+        </tr>
+        <tr>
+          <td class="date">Apr 1, 2026</td>
+          <td class="merchant">Cafe Farmers Market</td>
+          <td class="note">New York, NY</td>
+          <td class="right">$11.30</td>
+        </tr>
+        <tr>
+          <td class="date">Apr 1, 2026</td>
+          <td class="merchant">WHSmith + Well</td>
+          <td class="note">Newark Airport — Departure</td>
+          <td class="right">$5.47</td>
+        </tr>
+        <tr>
+          <td class="date">Apr 1, 2026</td>
+          <td class="merchant">Shake Shack</td>
+          <td class="note">Newark Airport — Departure</td>
+          <td class="right">$22.28</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td></td>
+          <td colspan="2">Subtotal</td>
+          <td class="right">$267.80</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Transport -->
+    <div class="section-heading">Ground Transportation — Uber</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th class="right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="date">Mar 30, 2026</td>
+          <td class="merchant">Uber — City ride</td>
+          <td class="right">$98.27</td>
+        </tr>
+        <tr>
+          <td class="date">Apr 1, 2026</td>
+          <td class="merchant">Uber — City ride</td>
+          <td class="right">$80.90</td>
+        </tr>
+        <tr>
+          <td class="date">Apr 1, 2026</td>
+          <td class="merchant">Uber — City ride</td>
+          <td class="right">$16.18</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td></td>
+          <td>Subtotal</td>
+          <td class="right">$195.35</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Events -->
+    <div class="section-heading">Events &amp; Admissions</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Description</th>
+          <th class="right">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="date">Jan 14, 2026</td>
+          <td class="merchant">Runway NY — Summit Registration <span style="color:#999; font-weight:400;">(prepaid)</span></td>
+          <td class="right">$350.00</td>
+        </tr>
+        <tr>
+          <td class="date">Mar 30, 2026</td>
+          <td class="merchant">Museum of Modern Art (MoMA)</td>
+          <td class="right">$30.00</td>
+        </tr>
+        <tr class="subtotal-row">
+          <td></td>
+          <td>Subtotal</td>
+          <td class="right">$380.00</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Grand total -->
+    <div class="grand-total">
+      <div>
+        <div class="grand-total-label">Total Trip Spend</div>
+        <div style="font-size:11px; color:rgba(245,237,217,0.4); margin-top:3px;">22 transactions · Mar 27 – Apr 1, 2026</div>
+      </div>
+      <div class="grand-total-amount">$2,142.14</div>
+    </div>
+
+    <!-- Notes -->
+    <div class="notes">
+      <div class="notes-title">Notes</div>
+      <ul>
+        <li>Flights booked March 14; Runway Summit fee prepaid January 14 — both attributed to this trip.</li>
+        <li>Ink 48 Hotel charges split across two billing dates (check-in deposit + checkout settlement).</li>
+        <li>Airport dining (TPA departure + EWR arrival) included in dining total.</li>
+        <li>Source accounts: Citi Card-1188. No Wells Fargo business charges attributed to this trip.</li>
+      </ul>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span>Tesoro · Personal Finance · nonformula@gmail.com</span>
+      <span>Generated April 14, 2026</span>
+    </div>
+
+  </div>
+</body>
+</html>

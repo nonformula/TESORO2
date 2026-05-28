@@ -268,7 +268,7 @@ input, textarea {
 .hero-card { min-height: 360px; }
 
 .hero-card .card-art-bg {
-  background-image: url("../../assets/ai_gens/landscape2.png");
+  background-image: url("/assets/ai_gens/landscape2.png");
   opacity: 0.85;
 }
 
@@ -452,7 +452,7 @@ input, textarea {
 .mastro-card { min-height: 620px; }
 
 .mastro-card .card-art-bg {
-  background-image: url("../../assets/ai_gens/royal_clothes1.png");
+  background-image: url("/assets/ai_gens/royal_clothes1.png");
   background-position: top center;
   background-size: cover;
   opacity: 1;
@@ -612,7 +612,7 @@ input, textarea {
 .login-bg {
   position: absolute;
   inset: 0;
-  background-image: url("../../assets/ai_gens/landscape2.png");
+  background-image: url("/assets/ai_gens/landscape2.png");
   background-size: cover;
   background-position: center 30%;
   opacity: 0.22;

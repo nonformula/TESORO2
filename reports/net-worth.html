@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro — Net Worth</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+
+    /* ── Nav ── */
+    .report-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeIn 0.4s ease both;
+    }
+    .report-nav-right {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.28;
+    }
+
+    /* ── Grid ── */
+    .report-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ── Hero ── */
+    .hero-card { min-height: 380px; }
+    .hero-total {
+      font-family: var(--font-serif);
+      font-size: 76px;
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      margin-bottom: 10px;
+      animation: numberIn 0.7s 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .hero-sub {
+      font-size: 11px;
+      opacity: 0.45;
+      letter-spacing: 0.06em;
+      margin-bottom: 32px;
+      animation: fadeIn 0.5s 0.55s ease both;
+    }
+
+    /* ── Stat ── */
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .stat-sub {
+      font-size: 11px;
+      opacity: 0.4;
+      letter-spacing: 0.04em;
+      margin-bottom: 18px;
+    }
+
+    /* ── KV rows ── */
+    .kv-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .kv-row:last-child { border-bottom: none; }
+    .kv-key {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.38;
+    }
+    .kv-val {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Gold KV override ── */
+    .kv-row--gold .kv-key  { color: #1a1208; opacity: 0.45; }
+    .kv-row--gold .kv-val  { color: #1a1208; }
+    .kv-row--gold { border-bottom-color: rgba(26,18,8,0.1); }
+
+    /* ── Donut ── */
+    .donut-wrap {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin: 0 auto;
+    }
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .donut-pct {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .donut-pct-label {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-top: 3px;
+    }
+
+    /* ── Portfolio bars ── */
+    .acct-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .acct-bar-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      width: 116px;
+      flex-shrink: 0;
+    }
+    .acct-bar-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(245,237,217,0.07);
+    }
+    .acct-bar-fill { height: 100%; }
+    .acct-bar-amt {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      width: 72px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── Account table ── */
+    .acct-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .acct-row:last-child { border-bottom: none; }
+    .acct-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .acct-name {
+      flex: 1;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+    .acct-ticker {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      opacity: 0.35;
+      width: 56px;
+      flex-shrink: 0;
+    }
+    .acct-type {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.3;
+      width: 72px;
+      flex-shrink: 0;
+    }
+    .acct-gain {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      width: 62px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .acct-val {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      width: 90px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .acct-row--total {
+      border-top: 1px solid rgba(245,237,217,0.14);
+      margin-top: 4px;
+      padding-top: 14px;
+      border-bottom: none;
+    }
+    .acct-row--total .acct-name {
+      font-weight: 600;
+      opacity: 0.9;
+    }
+    .acct-row--total .acct-val {
+      font-size: 22px;
+    }
+
+    /* ── Metric strip ── */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--border);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .metric-tile {
+      padding: 22px 24px;
+      border-right: 1px solid var(--border);
+      animation: cardIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .metric-tile:last-child { border-right: none; }
+    .metric-tile .metric-value {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .metric-tile .metric-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.32;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 1080px) {
+      .report-grid   { grid-template-columns: 1fr 1fr; }
+      .metric-strip  { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .report-grid   { grid-template-columns: 1fr; }
+      .metric-strip  { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="report-nav">
+  <div class="logo">
+    <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" />
+    <span class="logo-text">Tesoro</span>
+  </div>
+  <div class="report-nav-right">Net Worth &nbsp;·&nbsp; April 16, 2026</div>
+</nav>
+
+<div class="report-grid">
+
+  <!-- ── CARD 1: Hero — Net Worth (crimson) ── -->
+  <div class="card card--crimson hero-card" style="animation-delay:0.05s">
+    <div class="card-inner">
+      <p class="card-label">Net Worth · April 16, 2026</p>
+      <p class="hero-total">$1,063,829</p>
+      <p class="hero-sub">Total assets minus liabilities · 8 accounts</p>
+
+      <p class="card-label" style="margin-bottom:12px">Snapshot</p>
+      <div style="display:flex;gap:28px;flex-wrap:wrap">
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1">$1.75M</p>
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38;margin-top:4px">Total Assets</p>
+        </div>
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1;color:var(--orange)">$682,609</p>
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38;margin-top:4px">Mortgage</p>
+        </div>
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1">73.4%</p>
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38;margin-top:4px">Home LTV</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 2: Investment Portfolio (forest) ── -->
+  <div class="card card--forest" style="animation-delay:0.10s;min-height:380px">
+    <div class="card-inner">
+      <p class="card-label">Investment Portfolio</p>
+      <p class="stat-num">$816,438</p>
+      <p class="stat-sub">6 accounts · excl. real estate</p>
+
+      <div class="acct-bar-row">
+        <span class="acct-bar-label">WFA Brokerage</span>
+        <div class="acct-bar-track"><div class="acct-bar-fill" style="width:100%;background:var(--slate)"></div></div>
+        <span class="acct-bar-amt">$370,547</span>
+      </div>
+      <div class="acct-bar-row">
+        <span class="acct-bar-label">Schwab 401(k)</span>
+        <div class="acct-bar-track"><div class="acct-bar-fill" style="width:46.3%;background:rgba(245,237,217,0.5)"></div></div>
+        <span class="acct-bar-amt">$172,123</span>
+      </div>
+      <div class="acct-bar-row">
+        <span class="acct-bar-label">Schwab Joint</span>
+        <div class="acct-bar-track"><div class="acct-bar-fill" style="width:34.1%;background:rgba(245,237,217,0.38)"></div></div>
+        <span class="acct-bar-amt">$126,540</span>
+      </div>
+      <div class="acct-bar-row">
+        <span class="acct-bar-label">JH 401(k)</span>
+        <div class="acct-bar-track"><div class="acct-bar-fill" style="width:18.7%;background:rgba(245,237,217,0.28)"></div></div>
+        <span class="acct-bar-amt">$69,377</span>
+      </div>
+      <div class="acct-bar-row">
+        <span class="acct-bar-label">Bitcoin</span>
+        <div class="acct-bar-track"><div class="acct-bar-fill" style="width:15.5%;background:var(--orange)"></div></div>
+        <span class="acct-bar-amt">$57,298</span>
+      </div>
+      <div class="acct-bar-row" style="margin-bottom:0">
+        <span class="acct-bar-label">Schwab Custodial</span>
+        <div class="acct-bar-track"><div class="acct-bar-fill" style="width:5.5%;background:rgba(245,237,217,0.18)"></div></div>
+        <span class="acct-bar-amt">$20,553</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 3: Asset Allocation donut (navy) ── -->
+  <div class="card card--navy" style="animation-delay:0.15s;min-height:380px">
+    <div class="card-inner" style="display:flex;flex-direction:column;align-items:center">
+      <p class="card-label" style="align-self:flex-start">Asset Allocation</p>
+      <p class="stat-num" style="align-self:flex-start">$1.75M</p>
+      <p class="stat-sub" style="align-self:flex-start">Gross · all accounts</p>
+      <div class="donut-wrap">
+        <canvas id="allocDonut"></canvas>
+        <div class="donut-center">
+          <span class="donut-pct">$1.75M</span>
+          <span class="donut-pct-label">Total</span>
+        </div>
+      </div>
+      <div id="allocLegend" style="margin-top:16px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:5px 16px"></div>
+    </div>
+  </div>
+
+  <!-- ── CARD 4: Real Estate Equity (gold) ── -->
+  <div class="card card--gold" style="animation-delay:0.20s">
+    <div class="card-inner">
+      <p class="card-label">Real Estate Equity</p>
+      <p style="font-family:var(--font-serif);font-size:52px;font-weight:300;line-height:0.95;letter-spacing:-0.03em;color:#1a1208;margin-bottom:2px">$247,391</p>
+      <p style="font-size:11px;font-weight:500;letter-spacing:0.04em;opacity:0.5;color:#1a1208;margin-bottom:20px">2530 York St S · Gulfport FL 33707</p>
+
+      <div class="kv-row kv-row--gold">
+        <span class="kv-key">Estimated Value</span>
+        <span class="kv-val">$930,000</span>
+      </div>
+      <div class="kv-row kv-row--gold">
+        <span class="kv-key">Mortgage Balance</span>
+        <span class="kv-val">$682,609</span>
+      </div>
+      <div class="kv-row kv-row--gold">
+        <span class="kv-key">Loan-to-Value</span>
+        <span class="kv-val">73.4%</span>
+      </div>
+      <div class="kv-row kv-row--gold">
+        <span class="kv-key">Interest Rate</span>
+        <span class="kv-val">7.125%</span>
+      </div>
+      <div class="kv-row kv-row--gold">
+        <span class="kv-key">Matures</span>
+        <span class="kv-val">July 2054</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 5: Retirement Accounts (indigo) ── -->
+  <div class="card card--indigo" style="animation-delay:0.25s">
+    <div class="card-inner">
+      <p class="card-label">Retirement Accounts</p>
+      <p class="stat-num">$241,500</p>
+      <p class="stat-sub">2 accounts · 401(k)</p>
+
+      <div class="kv-row">
+        <span class="kv-key">Schwab 401(k) — SPY</span>
+        <span class="kv-val">$172,123</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">John Hancock — JH 2040</span>
+        <span class="kv-val">$69,377</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">SPY — Unrealized Gain</span>
+        <span class="kv-val" style="color:var(--gold)">+115.1%</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">JH — 12-Mo. Return</span>
+        <span class="kv-val" style="color:var(--gold)">+20.29%</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">% of Total Portfolio</span>
+        <span class="kv-val">29.6%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 6: Mortgage Liability (dark) ── -->
+  <div class="card card--dark" style="animation-delay:0.30s">
+    <div class="card-inner">
+      <p class="card-label">Mortgage Liability</p>
+      <p class="stat-num" style="color:var(--orange)">$682,609</p>
+      <p class="stat-sub" style="margin-bottom:18px">Newrez · Loan #0213535487</p>
+
+      <div class="kv-row">
+        <span class="kv-key">Monthly Payment</span>
+        <span class="kv-val">$5,578.79</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">Principal / Mo.</span>
+        <span class="kv-val">$629.35</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">Interest / Mo.</span>
+        <span class="kv-val" style="color:var(--orange)">$4,052.99</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">Escrow / Mo.</span>
+        <span class="kv-val">$896.45</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">YTD Interest Paid</span>
+        <span class="kv-val" style="color:var(--orange)">$16,249</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 7: Full Account Breakdown (dark, span 3) ── -->
+  <div class="card card--dark" style="animation-delay:0.35s;grid-column:span 3">
+    <div class="card-inner">
+      <p class="card-label">All Accounts</p>
+      <p class="stat-sub" style="margin-bottom:20px">Investment accounts · as of April 16, 2026</p>
+
+      <div class="acct-row">
+        <span class="acct-dot" style="background:var(--slate)"></span>
+        <span class="acct-name">Wells Fargo Advisors</span>
+        <span class="acct-ticker">VTI</span>
+        <span class="acct-type">Brokerage</span>
+        <span class="acct-gain" style="color:var(--gold)">+76.2%</span>
+        <span class="acct-val">$370,547</span>
+      </div>
+      <div class="acct-row">
+        <span class="acct-dot" style="background:rgba(245,237,217,0.45)"></span>
+        <span class="acct-name">Schwab Individual 401(k)</span>
+        <span class="acct-ticker">SPY</span>
+        <span class="acct-type">Retirement</span>
+        <span class="acct-gain" style="color:var(--gold)">+115.1%</span>
+        <span class="acct-val">$172,123</span>
+      </div>
+      <div class="acct-row">
+        <span class="acct-dot" style="background:rgba(245,237,217,0.32)"></span>
+        <span class="acct-name">Schwab Joint Tenant</span>
+        <span class="acct-ticker">SWPPX</span>
+        <span class="acct-type">Brokerage</span>
+        <span class="acct-gain" style="color:var(--gold)">+50.6%</span>
+        <span class="acct-val">$126,540</span>
+      </div>
+      <div class="acct-row">
+        <span class="acct-dot" style="background:rgba(245,237,217,0.22)"></span>
+        <span class="acct-name">John Hancock 401(k)</span>
+        <span class="acct-ticker">JH 2040</span>
+        <span class="acct-type">Retirement</span>
+        <span class="acct-gain" style="color:var(--gold)">+11.1% ann.</span>
+        <span class="acct-val">$69,377</span>
+      </div>
+      <div class="acct-row">
+        <span class="acct-dot" style="background:var(--orange)"></span>
+        <span class="acct-name">Robinhood</span>
+        <span class="acct-ticker">BTC</span>
+        <span class="acct-type">Crypto</span>
+        <span class="acct-gain" style="opacity:0.25">—</span>
+        <span class="acct-val">$57,298</span>
+      </div>
+      <div class="acct-row">
+        <span class="acct-dot" style="background:rgba(245,237,217,0.15)"></span>
+        <span class="acct-name">Schwab Custodial (×2)</span>
+        <span class="acct-ticker">IBIT · VTI</span>
+        <span class="acct-type">Brokerage</span>
+        <span class="acct-gain" style="color:var(--gold)">+32.7%</span>
+        <span class="acct-val">$20,553</span>
+      </div>
+
+      <div class="acct-row acct-row--total">
+        <span class="acct-dot" style="background:transparent"></span>
+        <span class="acct-name">Total Investments</span>
+        <span class="acct-ticker"></span>
+        <span class="acct-type"></span>
+        <span class="acct-gain"></span>
+        <span class="acct-val">$816,438</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /report-grid -->
+
+<!-- ── Metric strip ── -->
+<div class="metric-strip">
+  <div class="metric-tile" style="animation-delay:0.40s">
+    <div class="metric-value text-gold">$247,391</div>
+    <div class="metric-label">Home Equity</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.45s">
+    <div class="metric-value" style="color:var(--slate)">39.1%</div>
+    <div class="metric-label">Debt-to-Assets</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.50s">
+    <div class="metric-value text-orange">$16,249</div>
+    <div class="metric-label">YTD Interest Paid</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.55s">
+    <div class="metric-value">8</div>
+    <div class="metric-label">Accounts Tracked</div>
+  </div>
+</div>
+
+<script>
+  Chart.defaults.font.family = '"Space Grotesk", sans-serif';
+  Chart.defaults.color = 'rgba(245,237,217,0.38)';
+
+  /* Asset allocation donut
+     Real Estate (gross): $930,000
+     Brokerage (WFA + Schwab Joint + Custodial): $517,640
+     Retirement (Schwab 401k + JH 401k): $241,500
+     Bitcoin (Robinhood): $57,298
+  */
+  const allocLabels = ['Real Estate', 'Brokerage', 'Retirement', 'Bitcoin'];
+  const allocValues = [930000, 517640, 241500, 57298];
+  const allocColors = ['#A33030', '#5B9EC9', '#1F4027', '#F05A28'];
+
+  new Chart(document.getElementById('allocDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: allocLabels,
+      datasets: [{
+        data: allocValues,
+        backgroundColor: allocColors,
+        borderWidth: 0,
+        hoverOffset: 4,
+      }]
+    },
+    options: {
+      cutout: '66%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const pct = ((ctx.parsed / 1746438) * 100).toFixed(1);
+              return ` $${ctx.parsed.toLocaleString('en-US', {maximumFractionDigits: 0})}  (${pct}%)`;
+            }
+          }
+        }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+
+  const legend = document.getElementById('allocLegend');
+  allocLabels.forEach((l, i) => {
+    const pct = ((allocValues[i] / 1746438) * 100).toFixed(1);
+    const el = document.createElement('div');
+    el.style.cssText = 'display:flex;align-items:center;gap:6px';
+    el.innerHTML = `
+      <span style="width:7px;height:7px;border-radius:50%;background:${allocColors[i]};flex-shrink:0"></span>
+      <span style="font-size:9px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;opacity:0.55">${l} <span style="opacity:0.55">${pct}%</span></span>
+    `;
+    legend.appendChild(el);
+  });
+</script>
+
+</body>
+</html>

@@ -100,15 +100,201 @@ At the start of each new Claude session, read this file to catch up on current b
 
 ---
 
-## Next Steps
-- Confirm password auth works on production after env vars are set
-- Test full upload → analyze → Mastro flow on production
-- Commit milestone.md and any remaining changes
+## Milestone 6 — Standalone Report Pages
+**Date:** 2026-04-15
+**Status:** ✅ Complete
 
-## Future Features
-Common next steps:
-- Add property/mortgage card (home value input + mortgage CSV)
-- Add net worth timeline chart
-- Add Mastro follow-up chat (multi-turn conversation)
-- Add PDF statement parsing
-- Add date range filtering on dashboard
+### What was built
+- `public/mortgage.html` — Mortgage report for Newrez loan #0213535487
+  - 3-column grid: principal hero (crimson), payment breakdown with bars, equity/debt donut (navy), YTD paid (indigo), amortization bar chart (span 2)
+  - Metric strip: escrow balance, late fee threshold, remaining term, $0 overdue
+  - Chart.js: doughnut (interest/escrow/principal split) + stacked bar (12-month amortization)
+  - Data sourced from `assets/data/raw/Monthly Statement.pdf`
+
+- `public/spending-march.html` — Citi Card-1188 March 2026 spending report
+  - 7-card grid + metric strip from 103 parsed transactions across 10 categories
+  - $8,503 total spend; top categories: Merchandise $1,847, Restaurants $1,504, Health $1,484
+  - Chart.js: category donut + daily spend bar (Mar 27 peak $1,579 highlighted in orange)
+  - AI subscriptions callout card (indigo): $300 across Claude.ai Pro, Anthropic API, OpenAI, Runway, ElevenLabs
+  - Data sourced from `assets/data/raw/citi_060726.csv` — March rows only
+
+### Notable data findings (March 2026)
+- Tooth Doctor: $1,294 single charge (Mar 27) — dominant health spike
+- Neptune's Grill: 4 visits, $340 total — most-frequented restaurant
+- AI tooling: exactly $300/month across 5 services (3.5% of total spend)
+- Biggest day: Mar 27 at $1,579 (dentist + NYC hotel pre-trip)
+
+---
+
+## Milestone 7 — Design System Documentation
+**Date:** 2026-04-15
+**Status:** ✅ Complete
+
+### What was built
+- `TESORO_STYLE_GUIDE.md` — Comprehensive shareable markdown reference
+  - Brand philosophy, voice, logo usage rules + file paths
+  - Full color system: all 11 CSS tokens with hex values and semantic mapping
+  - Typography: IvyJournal + Space Grotesk specs, sizes, weights, tracking, critical `"ivyjournal"` no-hyphen note
+  - Spacing/shape rules (0px radius, 0px gap, no shadows — all intentional)
+  - Layout system: 3-column grid, metric strip, breakpoints
+  - All component patterns with HTML snippets (card anatomy, labels, KV rows, bars, metric tiles, insight cards)
+  - Animation system: 4 keyframes, stagger timing table, spring easing spec
+  - Chart.js defaults + color-to-data-type mapping
+  - 12-item Do / Don't checklist
+
+- `public/style-guide.html` — Visual interactive style guide (8 sections, sticky nav)
+  - 01 Brand: principle statement, logo in 3 contexts (cream bg, dark, surface), voice do/don't
+  - 02 Color: live swatches for all 11 tokens + card color→semantic use table
+  - 03 Typography: IvyJournal vs Space Grotesk specimens + full type scale with live examples
+  - 04 Cards: all 6 variants (crimson, gold, navy, forest, indigo, dark) rendered at full color
+  - 05 Components: labels, badges, horizontal bars, KV rows, metric tiles, insight cards, grain demo
+  - 06 Layout: grid diagram with span examples + spacing/shape rules panel
+  - 07 Motion: all 4 keyframes documented + stagger pattern visualization
+  - 08 Rules: Do/Don't checklist + footer stamp
+
+---
+
+---
+
+## Milestone 8 — v3 Architecture Pivot: Phase 1 (Archive + Scaffold)
+**Date:** 2026-04-16
+**Status:** ✅ Complete
+
+### What changed
+Complete architecture pivot from Python/Flask backend to pure static web app.
+
+**Archived to `_archive/`** (no longer active):
+- `api/` — Flask endpoints (auth, ingest, analyze, insights)
+- `analytics/` — Python metrics, anomalies, recurring modules
+- `orchestrator/` — build_context.py, generate_insights.py
+- `schemas/` — insights_output.json
+- `dev_server.py`, `requirements.txt`
+- `public/js/` — auth.js, upload.js, dashboard.js, mastro.js
+- `public/` — login.html, upload.html, dashboard.html
+
+**Created:**
+- `public/index.html` — single-page app shell: password screen, API key modal, sidebar nav, upload zone, view container
+- `public/css/app.css` — all new UI components: auth screens, sidebar, upload zone, loading states, insight panels, chart wrappers, timeframe bar, metric strips
+- `Tesoro_v3_plan.md` — architecture pivot plan
+
+**Updated:**
+- `vercel.json` — stripped to pure static config (no Python runtime, no functions)
+- `CLAUDE.md` — fully rewritten to reflect v3 architecture
+
+### New architecture
+- Pure static site: HTML + CSS + JS, no server
+- Browser calls Anthropic API directly via `fetch()`
+- Files parsed client-side: CSV (Papa Parse), XLSX (SheetJS), PDF (PDF.js)
+- Password: SHA-256 client-side hash, sessionStorage
+- Anthropic API key: sessionStorage only, clears on tab close
+- Five nav sections: Financial Brief, Net Worth, Investments, Spending, Budget
+
+### Current Build State
+**Phase 1 complete. Shell exists but JS not yet built.** Opening index.html shows the auth screen but has no logic yet — parser.js, app.js, llm.js, views.js are next.
+
+---
+
+---
+
+## Milestone 9 — v3 Full Build: Phases 2–5
+**Date:** 2026-04-16
+**Status:** ✅ Complete
+
+### What was built
+**public/js/parser.js** — Client-side file parser (CSV/XLSX/PDF)
+- CSV: Papa Parse with source detection (Wells/bank → headerless, Citi/card → headed, Schwab/swb → investment positions)
+- XLSX: SheetJS, sheet-to-JSON, same dispatch logic
+- PDF: PDF.js text extraction + transaction line pattern matching; Robinhood BTC position detection
+- All formats normalize to `{ date, amount, description, source, type }`
+
+**public/js/app.js** — Main controller
+- Password screen: SHA-256 hash in browser (`crypto.subtle`), default password `tesoro`
+- API key modal: validates `sk-ant-` prefix, stores in `sessionStorage`
+- Drag-and-drop + browse file upload, file list with CSV/XLSX/PDF color tags
+- Navigation routing, timeframe toggle, Chart.js instance cleanup on view switch
+- Session restore: loads prior transactions from `sessionStorage` on reload
+
+**public/js/llm.js** — Anthropic API client
+- Fetches `public/prompts/system.md` + `insight_rubric.md` + `examples/high_quality_insights.md` at call time
+- `buildSpendingContext()` — category breakdown, monthly totals, top merchants, largest charges
+- `buildInvestmentContext()` — per-symbol aggregation, gain/loss, portfolio weights
+- `generateInsights()` — full context → Anthropic API (`claude-opus-4-6`) → parsed JSON
+- `generateBrief()` — time-of-day greeting + 3-5 sentence brief
+- Merchant categorizer: 13 categories by keyword regex
+
+**public/js/views.js** — 5 section renderers
+- **Financial Brief**: crimson hero + at-a-glance KV card + LLM brief text + metric strip
+- **Net Worth**: hero number + holdings list + allocation donut + LLM commentary
+- **Investments**: portfolio total + return stats + allocation donut + bar chart by ticker + positions detail + LLM analysis
+- **Spending**: total + top category + largest charge + monthly bar (anomaly highlighted orange) + category donut + category bars + merchant bars + LLM insight cards (3)
+- **Budget**: inflow/outflow/savings rate heroes + category breakdown bars + horizontal bar chart + LLM insight cards (3)
+
+**public/css/app.css** — All new UI components
+
+**public/prompts/** — Prompt files moved here from project root so Vercel can serve them
+
+### Architecture notes
+- Password hash: `5cf0c40b...` = SHA-256 of "tesoro". Change by updating `PASS_HASH` in `app.js`.
+- API header: `anthropic-dangerous-direct-browser-access: true` required for direct browser → Anthropic API calls
+- Chart.js instances tracked in `window._tesoroCharts`, destroyed on each view switch to prevent canvas reuse errors
+- LLM prompt files cached in `_cache` object in `llm.js` for the session (one fetch per file per tab)
+
+### Current Build State
+**v3 is feature-complete.** All 5 views render. LLM integration wired. File parsing for CSV/XLSX/PDF implemented. Password + API key auth working.
+
+### Known limitations / next-up
+- Net Worth view only shows what's in loaded files (no manual asset entry)
+- PDF parsing relies on text extraction patterns — works for Robinhood/Wells statements, may need tuning for other formats
+- No error boundary UI for individual view failures (just console errors)
+
+---
+
+---
+
+## Milestone 10 — Parser Fixes: Real Data Ingestion
+**Date:** 2026-04-16
+**Status:** ✅ Complete
+
+### What was fixed
+Real data files from `assets/data/raw/041626/` revealed three parser bugs:
+
+**`detectSource` order bug**
+- `WELLS_INVESTMENTS_Portfolio_Positions.xls` matched `wells` before `invest` → parsed as bank
+- Fixed: investment/mortgage checks now run before bank checks
+- Added `checking` and `savings` keywords to bank pattern
+- Added `mortgage` as a new source type
+
+**Citi CSV metadata preamble**
+- `CITI_YTD_041626.CSV` has a `"Time period of report:..."` row before the real header
+- `parseCreditCSV` assumed row 0 was the header → all column indices were -1 → 0 transactions
+- Fixed: scan first 5 rows to find the row with a cell matching `/^date$/i`
+
+**Citi date format**
+- Dates are `"Mar 14, 2026"` — not handled by MM/DD/YYYY or ISO parsers
+- Fixed: added explicit `"Mon DD, YYYY"` pattern to `parseDate`
+
+**Bank files with header rows (new `parseBankHeaderCSV`)**
+- `personal_checking.csv` and `cash_savings.csv` have a header row with a single `amount` column
+- These were falling into `parseCreditCSV` → tagged as `credit_card`, amounts not negated
+- Bank convention: negative = spending, positive = income (opposite of credit card)
+- Fixed: new `parseBankHeaderCSV` function detects `amount` column and negates values so spending is positive (matching credit card convention used throughout `llm.js`)
+
+**Schwab activity log format (new `parseInvestmentActivityLog`)**
+- `schwab_investments.csv` uses an activity log format (`record_type`, `market_value`, `cash_effect` columns) — completely different from the Schwab positions format
+- Old parser found 0 records
+- Fixed: `parseInvestmentCSV` now auto-detects format by checking for `record_type` in the header; routes to `parseInvestmentActivityLog` which extracts the most recent position per symbol
+
+**Mortgage statement (new `parseMortgageCSV`)**
+- `mortgage_payment_statement.csv` is a multi-column amortization log, not a transaction file
+- Fixed: `parseMortgageCSV` extracts monthly payment rows as housing expenses (`amount = total_amount`, `type = 'bank'`)
+
+### Files changed
+- `public/js/parser.js` — `detectSource`, `parseDate`, `parseCreditCSV`, `parseCSV` updated; `parseBankHeaderCSV`, `parseMortgageCSV`, `parseInvestmentActivityLog` added
+
+---
+
+## Next Steps (v3)
+- Test end-to-end with all 5 views after parser fixes
+- Tune PDF parser for JH 401k and Robinhood statement formats
+- Add manual asset entry for Net Worth (home value, car, etc.)
+- Consider Mastro follow-up chat within a view

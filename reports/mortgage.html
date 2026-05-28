@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro — Mortgage Report</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ── Page-specific overrides ── */
+    .report-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeIn 0.4s ease both;
+    }
+    .report-header-right {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.3;
+    }
+
+    .report-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ── Hero — principal remaining ── */
+    .hero-card { min-height: 340px; }
+
+    /* ── Stat block shared ── */
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .stat-sub {
+      font-size: 11px;
+      opacity: 0.4;
+      letter-spacing: 0.04em;
+      margin-bottom: 20px;
+    }
+
+    /* ── Donut chart card ── */
+    .donut-wrap {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      margin: 0 auto;
+    }
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+    }
+    .donut-pct {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .donut-pct-label {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-top: 2px;
+    }
+
+    /* ── Payment breakdown bar ── */
+    .breakdown-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .breakdown-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      width: 68px;
+      flex-shrink: 0;
+    }
+    .breakdown-bar-track {
+      flex: 1;
+      height: 3px;
+      background: rgba(245,237,217,0.08);
+    }
+    .breakdown-bar-fill {
+      height: 100%;
+    }
+    .breakdown-amount {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      width: 56px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── Amortization bar chart ── */
+    .amort-wrap {
+      height: 100px;
+      position: relative;
+    }
+
+    /* ── Key-value rows ── */
+    .kv-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .kv-row:last-child { border-bottom: none; }
+    .kv-key {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.38;
+    }
+    .kv-val {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Metric tiles (bottom strip) ── */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--border);
+    }
+    .metric-tile {
+      padding: 22px 24px;
+      border-right: 1px solid var(--border);
+      animation: cardIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .metric-tile:last-child { border-right: none; }
+    .metric-tile .metric-value {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .metric-tile .metric-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 1080px) {
+      .report-grid { grid-template-columns: 1fr 1fr; }
+      .metric-strip { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .report-grid { grid-template-columns: 1fr; }
+      .metric-strip { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="report-header">
+  <div class="logo">
+    <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" />
+    <span class="logo-text">Tesoro</span>
+  </div>
+  <div class="report-header-right">Mortgage Report &nbsp;·&nbsp; April 2026</div>
+</header>
+
+<!-- Main grid -->
+<div class="report-grid">
+
+  <!-- ── CARD 1: Hero — Principal ──────────────────── -->
+  <div class="card card--crimson hero-card" style="animation-delay:0.05s">
+    <div class="card-inner">
+      <p class="card-label">Outstanding Principal</p>
+      <p class="stat-num">$682,609</p>
+      <p class="stat-sub">Newrez LLC · Loan #0213535487</p>
+
+      <p class="card-label" style="margin-bottom:8px">Loan Details</p>
+      <div class="kv-row">
+        <span class="kv-key">Rate</span>
+        <span class="kv-val">7.125%</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">Matures</span>
+        <span class="kv-val">July 2054</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">Property</span>
+        <span class="kv-val" style="font-size:14px;opacity:0.75">2530 York St S<br>Gulfport FL</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">Prepay Penalty</span>
+        <span class="kv-val" style="color:var(--gold)">None</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 2: Payment Breakdown ──────────────────── -->
+  <div class="card card--dark" style="animation-delay:0.1s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">Monthly Payment</p>
+      <p class="stat-num">$5,578</p>
+      <p class="stat-sub">Due May 1, 2026 · Autodraft</p>
+
+      <!-- Stacked bars -->
+      <div class="breakdown-row">
+        <span class="breakdown-label">Interest</span>
+        <div class="breakdown-bar-track">
+          <div class="breakdown-bar-fill" style="width:72.6%;background:var(--crimson)"></div>
+        </div>
+        <span class="breakdown-amount">$4,053</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Escrow</span>
+        <div class="breakdown-bar-track">
+          <div class="breakdown-bar-fill" style="width:16.1%;background:var(--gold)"></div>
+        </div>
+        <span class="breakdown-amount">$896</span>
+      </div>
+      <div class="breakdown-row">
+        <span class="breakdown-label">Principal</span>
+        <div class="breakdown-bar-track">
+          <div class="breakdown-bar-fill" style="width:11.3%;background:var(--slate)"></div>
+        </div>
+        <span class="breakdown-amount">$629</span>
+      </div>
+
+      <p style="font-size:10px;opacity:0.3;margin-top:16px;line-height:1.6">
+        At 7.125%, only 11¢ of every dollar reduces the principal.
+        72¢ goes to interest each month.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── CARD 3: Principal vs Interest Donut ─────────── -->
+  <div class="card card--navy" style="animation-delay:0.15s">
+    <div class="card-inner" style="text-align:center">
+      <p class="card-label" style="text-align:left">Equity vs. Debt</p>
+      <p class="stat-num" style="text-align:left">11.3%</p>
+      <p class="stat-sub" style="text-align:left">Of each payment goes to principal</p>
+      <div class="donut-wrap">
+        <canvas id="paymentDonut"></canvas>
+        <div class="donut-center">
+          <span class="donut-pct">72.6%</span>
+          <span class="donut-pct-label">Interest</span>
+        </div>
+      </div>
+      <p style="font-size:9px;opacity:0.3;margin-top:16px;letter-spacing:0.06em;text-transform:uppercase">
+        Of monthly payment
+      </p>
+    </div>
+  </div>
+
+  <!-- ── CARD 4: YTD Paid ────────────────────────────── -->
+  <div class="card card--indigo" style="animation-delay:0.2s">
+    <div class="card-inner">
+      <p class="card-label">Paid Year to Date</p>
+      <p class="stat-num">$22,775</p>
+      <p class="stat-sub">4 payments · Jan – Apr 2026</p>
+
+      <div class="kv-row">
+        <span class="kv-key">Principal</span>
+        <span class="kv-val">$2,480</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">Interest</span>
+        <span class="kv-val" style="color:var(--orange)">$16,249</span>
+      </div>
+      <div class="kv-row">
+        <span class="kv-key">Escrow</span>
+        <span class="kv-val">$4,045</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 5: Amortization Bar Chart ─────────────── -->
+  <div class="card card--dark" style="animation-delay:0.25s;border:1px solid var(--border);grid-column:span 2">
+    <div class="card-inner">
+      <p class="card-label">Principal vs. Interest — Monthly</p>
+      <p class="stat-sub" style="margin-bottom:16px">First 12 months at current rate · 7.125%</p>
+      <div class="amort-wrap" style="height:120px">
+        <canvas id="amortChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Metric strip ───────────────────────────────── -->
+<div class="metric-strip">
+  <div class="metric-tile" style="animation-delay:0.3s">
+    <div class="metric-value">$6,275</div>
+    <div class="metric-label">Escrow Balance</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.35s">
+    <div class="metric-value text-orange">$234</div>
+    <div class="metric-label">Late Fee After May 16</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.4s">
+    <div class="metric-value">28 yrs</div>
+    <div class="metric-label">Remaining Term</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.45s">
+    <div class="metric-value text-gold">$0</div>
+    <div class="metric-label">Fees or Overdue</div>
+  </div>
+</div>
+
+<script>
+  const CREAM  = 'rgba(245,237,217,';
+  const CREAM_DIM = CREAM + '0.08)';
+
+  Chart.defaults.font.family = '"Space Grotesk", sans-serif';
+  Chart.defaults.color = 'rgba(245,237,217,0.4)';
+
+  // ── Donut: payment split ─────────────────────────
+  new Chart(document.getElementById('paymentDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Interest', 'Escrow', 'Principal'],
+      datasets: [{
+        data: [4052.99, 896.45, 629.35],
+        backgroundColor: ['#A33030', '#D4B554', '#5B9EC9'],
+        borderWidth: 0,
+        hoverOffset: 4,
+      }]
+    },
+    options: {
+      cutout: '68%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` $${ctx.parsed.toLocaleString('en-US',{maximumFractionDigits:0})}`
+          }
+        }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+
+  // ── Bar: amortization first 12 months ────────────
+  // Simple approximation: P=682608.93, r=7.125%/12, each month principal = payment - interest
+  const P0    = 682608.93;
+  const rate  = 0.07125 / 12;
+  const pmt   = 5578.79 - 896.45; // exclude escrow for P+I calc
+
+  let bal = P0;
+  const labels   = ['May','Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr'];
+  const interest = [];
+  const principal = [];
+
+  for (let i = 0; i < 12; i++) {
+    const iAmt = bal * rate;
+    const pAmt = pmt - iAmt;
+    interest.push(Math.round(iAmt));
+    principal.push(Math.round(pAmt));
+    bal -= pAmt;
+  }
+
+  new Chart(document.getElementById('amortChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Interest',
+          data: interest,
+          backgroundColor: '#A33030',
+          borderWidth: 0,
+        },
+        {
+          label: 'Principal',
+          data: principal,
+          backgroundColor: '#5B9EC9',
+          borderWidth: 0,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          position: 'top',
+          align: 'end',
+          labels: {
+            boxWidth: 8,
+            boxHeight: 8,
+            padding: 14,
+            font: { size: 10 }
+          }
+        },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` $${ctx.parsed.y.toLocaleString()}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          stacked: true,
+          grid: { display: false },
+          ticks: { font: { size: 10 } },
+          border: { color: 'rgba(245,237,217,0.08)' }
+        },
+        y: {
+          stacked: true,
+          grid: { color: 'rgba(245,237,217,0.05)' },
+          ticks: {
+            font: { size: 10 },
+            callback: v => '$' + (v/1000).toFixed(1) + 'k'
+          },
+          border: { display: false }
+        }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro — Amex Card-3005 · Oct 2025–Mar 2026</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+
+    /* ── Nav ── */
+    .report-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeIn 0.4s ease both;
+    }
+    .report-nav-right {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.28;
+    }
+
+    /* ── Grid ── */
+    .report-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ── Hero ── */
+    .hero-card { min-height: 360px; }
+    .hero-total {
+      font-family: var(--font-serif);
+      font-size: 76px;
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      margin-bottom: 10px;
+      animation: numberIn 0.7s 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .hero-sub {
+      font-size: 11px;
+      opacity: 0.45;
+      letter-spacing: 0.06em;
+      margin-bottom: 32px;
+      animation: fadeIn 0.5s 0.55s ease both;
+    }
+
+    /* ── Stat shared ── */
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .stat-sub {
+      font-size: 11px;
+      opacity: 0.4;
+      letter-spacing: 0.04em;
+      margin-bottom: 18px;
+    }
+
+    /* ── Donut ── */
+    .donut-wrap {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin: 0 auto;
+    }
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .donut-pct {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .donut-pct-label {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-top: 3px;
+    }
+
+    /* ── Merchant rows ── */
+    .merchant-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .merchant-row:last-child { border-bottom: none; }
+    .merchant-rank {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      opacity: 0.22;
+      width: 14px;
+      flex-shrink: 0;
+    }
+    .merchant-name {
+      font-size: 12px;
+      font-weight: 500;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .merchant-cat {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      flex-shrink: 0;
+    }
+    .merchant-amt {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      flex-shrink: 0;
+      width: 68px;
+      text-align: right;
+    }
+
+    /* ── Recurring rows ── */
+    .recur-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-bottom: 1px solid rgba(245,237,217,0.05);
+    }
+    .recur-row:last-child { border-bottom: none; }
+    .recur-name { font-size: 12px; font-weight: 500; }
+    .recur-amt {
+      font-family: var(--font-serif);
+      font-size: 15px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      opacity: 0.65;
+    }
+
+    /* ── Horizontal category bars ── */
+    .cat-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 11px;
+    }
+    .cat-bar-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      width: 96px;
+      flex-shrink: 0;
+    }
+    .cat-bar-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(245,237,217,0.07);
+    }
+    .cat-bar-fill { height: 100%; }
+    .cat-bar-amt {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      width: 62px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── Chart wrappers ── */
+    .monthly-wrap  { height: 140px; position: relative; }
+    .chart-wrap-sm { height: 110px; position: relative; }
+    .chart-wrap-md { height: 130px; position: relative; }
+
+    /* ── Travel trip row ── */
+    .trip-row {
+      padding: 13px 0;
+      border-bottom: 1px solid rgba(245,237,217,0.07);
+    }
+    .trip-row:last-child { border-bottom: none; }
+    .trip-dest {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      margin-bottom: 3px;
+    }
+    .trip-total {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: var(--gold);
+    }
+    .trip-items {
+      font-size: 10px;
+      opacity: 0.4;
+      letter-spacing: 0.03em;
+      margin-top: 4px;
+      line-height: 1.7;
+    }
+
+    /* ── Section divider ── */
+    .section-divider {
+      grid-column: span 3;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 20px 24px 0;
+      border-top: 1px solid var(--border);
+    }
+    .section-divider-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      opacity: 0.28;
+      white-space: nowrap;
+    }
+    .section-divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* ── Insight card ── */
+    .insight-title {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 300;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+    .insight-body {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.65;
+      opacity: 0.75;
+      margin-bottom: 14px;
+    }
+    .insight-interp {
+      font-size: 11px;
+      font-weight: 400;
+      line-height: 1.6;
+      opacity: 0.42;
+      padding-top: 12px;
+      border-top: 1px solid rgba(245,237,217,0.06);
+      margin-bottom: 14px;
+    }
+    .insight-rec-label {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.38;
+      margin-bottom: 5px;
+    }
+    .insight-rec {
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.55;
+      color: var(--cream);
+    }
+
+    /* ── Anomaly kv ── */
+    .anomaly-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 11px 0;
+      border-bottom: 1px solid rgba(245,237,217,0.05);
+    }
+    .anomaly-row:last-child { border-bottom: none; }
+    .anomaly-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--orange);
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .anomaly-text {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.55;
+      flex: 1;
+    }
+    .anomaly-text strong {
+      font-weight: 600;
+      color: var(--cream);
+    }
+
+    /* ── Metric strip ── */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--border);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .metric-tile {
+      padding: 22px 24px;
+      border-right: 1px solid var(--border);
+      animation: cardIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .metric-tile:last-child { border-right: none; }
+    .metric-tile .metric-value {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .metric-tile .metric-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.32;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 1080px) {
+      .report-grid { grid-template-columns: 1fr 1fr; }
+      .metric-strip { grid-template-columns: 1fr 1fr; }
+      .section-divider { grid-column: span 2; }
+    }
+    @media (max-width: 640px) {
+      .report-grid { grid-template-columns: 1fr; }
+      .metric-strip { grid-template-columns: 1fr 1fr; }
+      .section-divider { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="report-nav">
+  <div class="logo">
+    <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" />
+    <span class="logo-text">Tesoro</span>
+  </div>
+  <div class="report-nav-right">Amex Card-3005 &nbsp;·&nbsp; Oct 2025 – Mar 2026</div>
+</nav>
+
+<div class="report-grid">
+
+  <!-- ── CARD 1: Hero ─────────────────────────────────── -->
+  <div class="card card--crimson hero-card" style="animation-delay:0.05s">
+    <div class="card-inner">
+      <p class="card-label">Net Spend · 6-Month Review</p>
+      <p class="hero-total">$34,930</p>
+      <p class="hero-sub">236 transactions · Amex Card-3005 · Oct 2025 – Mar 2026</p>
+
+      <p class="card-label" style="margin-bottom:10px">Period at a Glance</p>
+      <div style="display:flex;gap:24px;flex-wrap:wrap">
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1">14</p>
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38;margin-top:4px">Categories</p>
+        </div>
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1">$5,822</p>
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38;margin-top:4px">Avg / Month</p>
+        </div>
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1;color:var(--orange)">$2,124</p>
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38;margin-top:4px">Biggest Charge</p>
+        </div>
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1">2</p>
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38;margin-top:4px">Travel Events</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 2: Dining (gold) ───────────────────────── -->
+  <div class="card card--gold" style="animation-delay:0.1s;min-height:360px">
+    <div class="card-inner" style="display:flex;flex-direction:column;justify-content:space-between;height:100%">
+      <div>
+        <p class="card-label" style="color:#1a1208">Top Discretionary Category · Dining</p>
+        <p style="font-family:var(--font-serif);font-size:52px;font-weight:300;line-height:0.95;letter-spacing:-0.03em;color:#1a1208;margin-bottom:2px">$7,287</p>
+        <p style="font-size:12px;font-weight:600;letter-spacing:0.04em;opacity:0.55;color:#1a1208;margin-bottom:20px">48 transactions · 20.9% of total spend</p>
+      </div>
+      <div>
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.4;color:#1a1208;margin-bottom:8px">Top Venues by Cumulative Spend</p>
+        <div style="border-top:1px solid rgba(26,18,8,0.12)">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(26,18,8,0.08)">
+            <span style="font-size:12px;font-weight:500;color:#1a1208">Felix Trattoria</span>
+            <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:#1a1208">$2,024 · 11×</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(26,18,8,0.08)">
+            <span style="font-size:12px;font-weight:500;color:#1a1208">Nobu Los Angeles</span>
+            <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:#1a1208">$912 · 5×</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(26,18,8,0.08)">
+            <span style="font-size:12px;font-weight:500;color:#1a1208">Ruth's Chris</span>
+            <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:#1a1208">$845 · 6×</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(26,18,8,0.08)">
+            <span style="font-size:12px;font-weight:500;color:#1a1208">Hillstone</span>
+            <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:#1a1208">$712 · 6×</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0">
+            <span style="font-size:12px;font-weight:500;color:#1a1208">Mastro's Steakhouse</span>
+            <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:#1a1208">$549 · 4×</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 3: Category Donut (navy) ──────────────── -->
+  <div class="card card--navy" style="animation-delay:0.15s;min-height:360px">
+    <div class="card-inner" style="display:flex;flex-direction:column;align-items:center">
+      <p class="card-label" style="align-self:flex-start">Spend by Category</p>
+      <p class="stat-num" style="align-self:flex-start">8 groups</p>
+      <p class="stat-sub" style="align-self:flex-start">Oct 2025 – Mar 2026 · gross charges</p>
+      <div class="donut-wrap">
+        <canvas id="catDonut"></canvas>
+        <div class="donut-center">
+          <span class="donut-pct">$36.9k</span>
+          <span class="donut-pct-label">Gross</span>
+        </div>
+      </div>
+      <div id="donutLegend" style="margin-top:16px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:5px 14px"></div>
+    </div>
+  </div>
+
+  <!-- ── CARD 4: Top Single Charges (dark) ──────────── -->
+  <div class="card card--dark" style="animation-delay:0.2s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">Largest Single Charges</p>
+      <p class="stat-sub" style="margin-bottom:14px">One-time transactions over $600</p>
+
+      <div class="merchant-row">
+        <span class="merchant-rank">01</span>
+        <span class="merchant-name">Marriott Aspen</span>
+        <span class="merchant-cat">Hotel</span>
+        <span class="merchant-amt text-orange">$2,124</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">02</span>
+        <span class="merchant-name">Ritz-Carlton Naples</span>
+        <span class="merchant-cat">Hotel</span>
+        <span class="merchant-amt text-orange">$1,846</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">03</span>
+        <span class="merchant-name">Amazon Marketplace</span>
+        <span class="merchant-cat">Shopping</span>
+        <span class="merchant-amt">$1,327</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">04</span>
+        <span class="merchant-name">Delta Air Lines</span>
+        <span class="merchant-cat">Airfare</span>
+        <span class="merchant-amt">$1,285</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">05</span>
+        <span class="merchant-name">Amazon Marketplace</span>
+        <span class="merchant-cat">Shopping</span>
+        <span class="merchant-amt">$1,224</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">06</span>
+        <span class="merchant-name">United Airlines</span>
+        <span class="merchant-cat">Airfare</span>
+        <span class="merchant-amt">$986</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">07</span>
+        <span class="merchant-name">Amex Platinum Annual Fee</span>
+        <span class="merchant-cat">Fees</span>
+        <span class="merchant-amt" style="color:var(--purple,#C88FE0)">$695</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">08</span>
+        <span class="merchant-name">Ski Concierge</span>
+        <span class="merchant-cat">Travel</span>
+        <span class="merchant-amt">$429</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 5: Fixed Recurring (indigo) ───────────── -->
+  <div class="card card--indigo" style="animation-delay:0.25s">
+    <div class="card-inner">
+      <p class="card-label">Fixed Monthly Commitments</p>
+      <p class="stat-num">$664</p>
+      <p class="stat-sub">per month · 6 services · $3,984 over period</p>
+
+      <div class="recur-row">
+        <span class="recur-name">Equinox Membership</span>
+        <span class="recur-amt">$285.00</span>
+      </div>
+      <div class="recur-row">
+        <span class="recur-name">Verizon Wireless</span>
+        <span class="recur-amt">$168.42</span>
+      </div>
+      <div class="recur-row">
+        <span class="recur-name">Xfinity Internet</span>
+        <span class="recur-amt">$112.60</span>
+      </div>
+      <div class="recur-row">
+        <span class="recur-name">Adobe Creative Cloud</span>
+        <span class="recur-amt">$54.99</span>
+      </div>
+      <div class="recur-row">
+        <span class="recur-name">Netflix</span>
+        <span class="recur-amt">$22.99</span>
+      </div>
+      <div class="recur-row">
+        <span class="recur-name">Spotify</span>
+        <span class="recur-amt">$19.99</span>
+      </div>
+
+      <div style="margin-top:18px;padding-top:14px;border-top:1px solid rgba(245,237,217,0.08)">
+        <p style="font-size:10px;opacity:0.28;line-height:1.6;letter-spacing:0.02em">
+          $664/mo clears automatically — 11.4% of spend with zero decisions made.
+        </p>
+        <p style="font-size:10px;opacity:0.2;line-height:1.6;letter-spacing:0.02em;margin-top:6px">
+          Annualized: $7,968 in committed base costs.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 6: Category Bars (dark) ───────────────── -->
+  <div class="card card--dark" style="animation-delay:0.3s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">Category Breakdown</p>
+      <p class="stat-sub" style="margin-bottom:18px">Gross charges, 6-month total</p>
+
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Shopping</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:100%;background:var(--slate)"></div></div>
+        <span class="cat-bar-amt">$9,267</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Dining</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:78.6%;background:var(--gold)"></div></div>
+        <span class="cat-bar-amt">$7,287</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Travel</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:77.5%;background:var(--crimson)"></div></div>
+        <span class="cat-bar-amt">$7,182</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Groceries</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:49.2%;background:rgba(245,237,217,0.45)"></div></div>
+        <span class="cat-bar-amt">$4,562</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Fuel</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:25.3%;background:rgba(245,237,217,0.28)"></div></div>
+        <span class="cat-bar-amt">$2,349</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Fitness</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:18.5%;background:var(--forest)"></div></div>
+        <span class="cat-bar-amt">$1,710</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Phone / Net</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:18.2%;background:var(--indigo)"></div></div>
+        <span class="cat-bar-amt">$1,686</span>
+      </div>
+      <div class="cat-bar-row" style="margin-bottom:0">
+        <span class="cat-bar-label">Home + Other</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:14.9%;background:rgba(245,237,217,0.15)"></div></div>
+        <span class="cat-bar-amt">$1,382</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 7: Monthly Bar Chart (full width) ─────── -->
+  <div class="card card--dark" style="animation-delay:0.35s;border:1px solid var(--border);grid-column:span 3">
+    <div class="card-inner">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px">
+        <div>
+          <p class="card-label">Monthly Net Spend — Oct 2025 to Mar 2026</p>
+          <p class="stat-sub" style="margin-bottom:16px">Crimson = travel month · Mar 2026 partial (through Mar 27)</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;padding-top:2px">
+          <div style="display:flex;align-items:center;gap:5px">
+            <div style="width:10px;height:3px;background:#A33030"></div>
+            <span style="font-size:9px;opacity:0.38;letter-spacing:0.06em;text-transform:uppercase">Travel Month</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:5px">
+            <div style="width:10px;height:3px;background:rgba(245,237,217,0.32)"></div>
+            <span style="font-size:9px;opacity:0.38;letter-spacing:0.06em;text-transform:uppercase">Baseline</span>
+          </div>
+        </div>
+      </div>
+      <div class="monthly-wrap">
+        <canvas id="monthlyChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 8: Dining by Month (dark, span 2) ─────── -->
+  <div class="card card--dark" style="animation-delay:0.4s;border:1px solid var(--border);grid-column:span 2">
+    <div class="card-inner">
+      <p class="card-label">Dining Spend by Month</p>
+      <p class="stat-sub" style="margin-bottom:16px">All restaurant charges · remarkably flat despite variable monthly totals</p>
+      <div class="chart-wrap-md">
+        <canvas id="diningByMonth"></canvas>
+      </div>
+      <div style="display:flex;gap:24px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <div>
+          <p style="font-family:var(--font-serif);font-size:20px;font-weight:300;letter-spacing:-0.02em;line-height:1">$1,281</p>
+          <p style="font-size:8px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35;margin-top:3px">Peak — Dec</p>
+        </div>
+        <div>
+          <p style="font-family:var(--font-serif);font-size:20px;font-weight:300;letter-spacing:-0.02em;line-height:1">$1,150</p>
+          <p style="font-size:8px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35;margin-top:3px">Low — Mar</p>
+        </div>
+        <div>
+          <p style="font-family:var(--font-serif);font-size:20px;font-weight:300;letter-spacing:-0.02em;line-height:1">$131</p>
+          <p style="font-size:8px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35;margin-top:3px">Spread (11%)</p>
+        </div>
+        <div>
+          <p style="font-family:var(--font-serif);font-size:20px;font-weight:300;letter-spacing:-0.02em;line-height:1;color:var(--gold)">$1,214</p>
+          <p style="font-size:8px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35;margin-top:3px">Monthly Avg</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 9: Travel Events (indigo) ─────────────── -->
+  <div class="card card--indigo" style="animation-delay:0.45s">
+    <div class="card-inner">
+      <p class="card-label">Travel Events · 2 Trips</p>
+      <p class="stat-num" style="color:var(--gold)">$7,182</p>
+      <p class="stat-sub">19.4% of 6-month spend</p>
+
+      <div class="trip-row">
+        <p class="trip-dest">Naples, FL — Nov</p>
+        <p class="trip-total">$3,537</p>
+        <p class="trip-items">Ritz-Carlton $1,846 · Delta $1,285 · Hertz $322 · Uber $46 · Parking $38</p>
+      </div>
+      <div class="trip-row">
+        <p class="trip-dest">Aspen, CO — Feb</p>
+        <p class="trip-total">$3,645</p>
+        <p class="trip-items">Marriott Aspen $2,124 · United $986 · Ski Concierge $429 · Uber $62 · Parking $44</p>
+      </div>
+
+      <div style="margin-top:16px;padding-top:12px;border-top:1px solid rgba(245,237,217,0.08)">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+          <span style="font-size:10px;opacity:0.38;letter-spacing:0.06em;text-transform:uppercase">Avg per trip</span>
+          <span style="font-family:var(--font-serif);font-size:15px;font-weight:300">$3,591</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-size:10px;opacity:0.38;letter-spacing:0.06em;text-transform:uppercase">Annualized pace</span>
+          <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:var(--orange)">$14,364</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 10: Shopping Breakdown Donut (navy) ────── -->
+  <div class="card card--navy" style="animation-delay:0.5s">
+    <div class="card-inner" style="display:flex;flex-direction:column;align-items:center">
+      <p class="card-label" style="align-self:flex-start">Shopping Breakdown</p>
+      <p style="font-family:var(--font-serif);font-size:32px;font-weight:300;letter-spacing:-0.02em;line-height:1;align-self:flex-start;margin-bottom:2px">$9,267</p>
+      <p class="stat-sub" style="align-self:flex-start">5 sub-categories · largest share of spend</p>
+      <div class="donut-wrap">
+        <canvas id="shopDonut"></canvas>
+        <div class="donut-center">
+          <span class="donut-pct" style="font-size:18px">43%</span>
+          <span class="donut-pct-label">Amazon</span>
+        </div>
+      </div>
+      <div id="shopLegend" style="margin-top:16px;width:100%;display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+  </div>
+
+  <!-- ── CARD 11: Grocery Trend (dark) ──────────────── -->
+  <div class="card card--dark" style="animation-delay:0.55s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">Grocery Spend by Month</p>
+      <p class="stat-sub" style="margin-bottom:14px">Bristol Farms · Whole Foods · Trader Joe's · Erewhon</p>
+      <div class="chart-wrap-sm">
+        <canvas id="groceryChart"></canvas>
+      </div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border)">
+        <div class="cat-bar-row" style="margin-bottom:8px">
+          <span class="cat-bar-label">Whole Foods</span>
+          <div class="cat-bar-track"><div class="cat-bar-fill" style="width:100%;background:rgba(245,237,217,0.3)"></div></div>
+          <span class="cat-bar-amt">$1,784</span>
+        </div>
+        <div class="cat-bar-row" style="margin-bottom:8px">
+          <span class="cat-bar-label">Trader Joe's</span>
+          <div class="cat-bar-track"><div class="cat-bar-fill" style="width:83%;background:rgba(245,237,217,0.22)"></div></div>
+          <span class="cat-bar-amt">$1,481</span>
+        </div>
+        <div class="cat-bar-row" style="margin-bottom:8px">
+          <span class="cat-bar-label">Bristol Farms</span>
+          <div class="cat-bar-track"><div class="cat-bar-fill" style="width:76%;background:rgba(245,237,217,0.18)"></div></div>
+          <span class="cat-bar-amt">$1,077</span>
+        </div>
+        <div class="cat-bar-row" style="margin-bottom:0">
+          <span class="cat-bar-label">Erewhon</span>
+          <div class="cat-bar-track"><div class="cat-bar-fill" style="width:10%;background:var(--gold)"></div></div>
+          <span class="cat-bar-amt">$178</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 12: Fuel Pattern (dark) ──────────────── -->
+  <div class="card card--dark" style="animation-delay:0.6s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">Fuel Spend — Monthly Pattern</p>
+      <p class="stat-sub" style="margin-bottom:14px">Shell · Exxon · Chevron · 76 · Tesla Supercharger</p>
+      <div class="chart-wrap-sm">
+        <canvas id="fuelChart"></canvas>
+      </div>
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1">$391</p>
+          <p style="font-size:8px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35;margin-top:3px">Monthly avg</p>
+        </div>
+        <div style="text-align:right">
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1">$55</p>
+          <p style="font-size:8px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35;margin-top:3px">Max swing</p>
+        </div>
+        <div style="text-align:right">
+          <p style="font-family:var(--font-serif);font-size:20px;font-weight:300;letter-spacing:-0.02em;line-height:1;color:var(--slate)">3 brands</p>
+          <p style="font-size:8px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35;margin-top:3px">EV + gas split</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 13: Apple.com Anomaly + Outliers (orange) -->
+  <div class="card" style="animation-delay:0.65s;background:rgba(240,90,40,0.12);border:1px solid rgba(240,90,40,0.2)">
+    <div class="card-inner">
+      <p class="card-label" style="color:var(--orange)">Anomalies &amp; Outliers</p>
+      <p style="font-family:var(--font-serif);font-size:28px;font-weight:300;letter-spacing:-0.02em;line-height:1;color:var(--orange);margin-bottom:6px">5 flagged</p>
+      <p class="stat-sub" style="margin-bottom:18px">Unusual charges, spikes, or patterns</p>
+
+      <div class="anomaly-row">
+        <div class="anomaly-dot"></div>
+        <p class="anomaly-text"><strong>Amazon Oct 27: $1,327</strong> — charged 6 days after the prior autopay cleared. A large purchase immediately after balance reset. Repeated in Dec with $1,224 on Dec 27.</p>
+      </div>
+      <div class="anomaly-row">
+        <div class="anomaly-dot"></div>
+        <p class="anomaly-text"><strong>Nov Merchant Adjustment: –$1,563</strong> — largest single credit in the dataset. Reason unknown. Offset against $1,845 hotel and $1,285 flight in same cycle.</p>
+      </div>
+      <div class="anomaly-row">
+        <div class="anomaly-dot"></div>
+        <p class="anomaly-text"><strong>Apple.com/Bill swings 4.7×</strong> — from $87 in Oct to $409 in Jan. Inconsistent billing suggests app/device purchases layered onto base subscription.</p>
+      </div>
+      <div class="anomaly-row">
+        <div class="anomaly-dot"></div>
+        <p class="anomaly-text"><strong>Felix Trattoria in Jan: 4 visits, $665</strong> — 2.4× any other month. January is a non-travel month. All other Jan costs were controlled.</p>
+      </div>
+      <div class="anomaly-row">
+        <div class="anomaly-dot"></div>
+        <p class="anomaly-text"><strong>Restoration Hardware: $979 total</strong> — 4 charges across 4 months. No other home goods merchant appears. Ongoing piecemeal purchases, not a single renovation charge.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MASTRO SECTION DIVIDER ──────────────────────── -->
+  <div class="section-divider" style="animation:fadeIn 0.5s 0.65s ease both">
+    <span class="section-divider-label">Mastro · Pattern Analysis</span>
+    <div class="section-divider-line"></div>
+  </div>
+
+  <!-- ── CARD 14: Mastro Insight 1 (forest) ────────── -->
+  <div class="card card--forest" style="animation-delay:0.7s">
+    <div class="card-inner">
+      <p class="card-label">Mastro · Analysis</p>
+      <p class="insight-title">Travel is the only variable that moves the bill</p>
+      <p class="insight-body">
+        Non-travel months — Oct, Dec, Jan, Mar — held flat between $4,897 and $5,443. A spread of $546 across four months. Nov added Ritz-Carlton Naples ($1,846) and Delta ($1,285). Feb added Marriott Aspen ($2,124), United ($986), and ski concierge ($429). Strip those charges out and both months land squarely inside the baseline band.
+      </p>
+      <p class="insight-interp">
+        Baseline discretionary behavior is stable. The budget risk here is not gradual creep — it is the frequency and cost of unbudgeted travel events. Two trips in six months added approximately $7,200 above baseline. At this pace, travel alone represents $14,400/year in incremental spend above a $69,900 annualized run rate.
+      </p>
+      <p class="insight-rec-label">Recommendation</p>
+      <p class="insight-rec">Set a dedicated travel reserve: $2,500–3,500 per trip, funded monthly at $500–600. With baseline this stable, the math closes easily. The only uncertainty is trip frequency.</p>
+    </div>
+  </div>
+
+  <!-- ── CARD 15: Mastro Insight 2 (dark surface) ───── -->
+  <div class="card card--dark" style="animation-delay:0.75s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">Mastro · Analysis</p>
+      <p class="insight-title">Felix Trattoria is a recurring cost disguised as social spending</p>
+      <p class="insight-body">
+        11 visits across every month of the 6-month period. $2,024 total. $184 average per visit. No other restaurant in the data reaches 40% of Felix's visit frequency. In January alone — a non-travel, non-holiday month — there were 4 visits totaling $665. That single month exceeds the entire grocery bill at Bristol Farms for the same period.
+      </p>
+      <p class="insight-interp">
+        High-frequency, mid-ticket dining at one venue compounds invisibly. At $184/visit and the current 1.8 visits per month pace, this is a $3,979/year line item that reads as spontaneous in the moment. The pattern suggests Felix functions as a default destination — the choice when there is no specific plan. Annualized, it is the 5th largest single-vendor spend on this card.
+      </p>
+      <p class="insight-rec-label">Recommendation</p>
+      <p class="insight-rec">Name it: decide how many Felix visits per month are intentional. Even reducing from ~2 to ~1.5 saves $440 annually. The goal is awareness, not restriction.</p>
+    </div>
+  </div>
+
+  <!-- ── CARD 16: Mastro Insight 3 (navy) ──────────── -->
+  <div class="card card--navy" style="animation-delay:0.8s">
+    <div class="card-inner">
+      <p class="card-label">Mastro · Analysis</p>
+      <p class="insight-title">Amazon has a post-payment window pattern</p>
+      <p class="insight-body">
+        Of 9 Amazon charges in this period, 7 averaged $177. The two outliers — Oct 27 at $1,327 and Dec 27 at $1,224 — averaged $1,275 and combined to $2,551. Both occurred within days of a prior autopay clearing. In October, autopay cleared on Nov 17; the $1,327 charge was placed Oct 27. In December, autopay cleared Dec 15; the $1,224 charge was placed Dec 27.
+      </p>
+      <p class="insight-interp">
+        This timing is consistent with a known behavioral pattern: large discretionary purchases feel lower-stakes when the running balance has recently reset or is about to reset. The $2,551 combined total exceeds every individual month's grocery spend and represents 7.3% of six-month net spend. Confidence in the timing pattern is moderate — two instances, consistent positioning.
+      </p>
+      <p class="insight-rec-label">Recommendation</p>
+      <p class="insight-rec">Add a 24-hour pause on any single Amazon charge above $400. If the purchase was planned, the delay costs nothing. If it was not, the pause usually reveals that.</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Metric strip -->
+<div class="metric-strip">
+  <div class="metric-tile" style="animation-delay:0.85s">
+    <div class="metric-value text-gold">$34,930</div>
+    <div class="metric-label">Net Spend · 6 Months</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.9s">
+    <div class="metric-value">$5,822</div>
+    <div class="metric-label">Average Monthly Spend</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.95s">
+    <div class="metric-value text-orange">$2,124</div>
+    <div class="metric-label">Largest Single Charge</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:1.0s">
+    <div class="metric-value" style="color:var(--gold)">11×</div>
+    <div class="metric-label">Felix Trattoria Visits</div>
+  </div>
+</div>
+
+<script>
+  Chart.defaults.font.family = '"Space Grotesk", sans-serif';
+  Chart.defaults.color = 'rgba(245,237,217,0.38)';
+
+  // ── 1. Category donut ────────────────────────────────
+  const catLabels  = ['Shopping','Dining','Travel','Groceries','Fuel','Fitness','Phone / Net','Other'];
+  const catValues  = [9267, 7287, 7182, 4562, 2349, 1710, 1686, 2817];
+  const catColors  = ['#5B9EC9','#D4B554','#A33030','rgba(245,237,217,0.45)','rgba(245,237,217,0.2)','#1F4027','#1D3B6F','#C88FE0'];
+
+  new Chart(document.getElementById('catDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: catLabels,
+      datasets: [{
+        data: catValues,
+        backgroundColor: catColors,
+        borderWidth: 0,
+        hoverOffset: 4,
+      }]
+    },
+    options: {
+      cutout: '67%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` $${ctx.parsed.toLocaleString('en-US',{maximumFractionDigits:0})}`
+          }
+        }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+
+  const legend = document.getElementById('donutLegend');
+  catLabels.forEach((l, i) => {
+    const el = document.createElement('div');
+    el.style.cssText = 'display:flex;align-items:center;gap:5px';
+    el.innerHTML = `
+      <span style="width:7px;height:7px;border-radius:50%;background:${catColors[i]};flex-shrink:0"></span>
+      <span style="font-size:9px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;opacity:0.55">${l}</span>
+    `;
+    legend.appendChild(el);
+  });
+
+  // ── 2. Monthly totals bar ────────────────────────────
+  const months    = ['Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26*'];
+  const monthData = [5018, 6487, 5443, 5273, 7812, 4897];
+  const barColors = [
+    'rgba(245,237,217,0.32)',
+    '#A33030',
+    'rgba(245,237,217,0.32)',
+    'rgba(245,237,217,0.32)',
+    '#A33030',
+    'rgba(245,237,217,0.18)',
+  ];
+
+  new Chart(document.getElementById('monthlyChart'), {
+    type: 'bar',
+    data: {
+      labels: months,
+      datasets: [{
+        data: monthData,
+        backgroundColor: barColors,
+        borderWidth: 0,
+        borderRadius: 0,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` $${ctx.parsed.y.toLocaleString('en-US',{maximumFractionDigits:0})}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 10 }, maxRotation: 0 },
+          border: { color: 'rgba(245,237,217,0.07)' }
+        },
+        y: {
+          grid: { color: 'rgba(245,237,217,0.04)' },
+          ticks: { font: { size: 9 }, callback: v => v === 0 ? '' : '$' + (v/1000).toFixed(0) + 'k' },
+          border: { display: false }
+        }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+
+  // ── 3. Dining by month ──────────────────────────────
+  new Chart(document.getElementById('diningByMonth'), {
+    type: 'bar',
+    data: {
+      labels: ['Oct','Nov','Dec','Jan','Feb','Mar'],
+      datasets: [{
+        label: 'Dining',
+        data: [1196, 1183, 1281, 1245, 1232, 1150],
+        backgroundColor: '#D4B554',
+        borderWidth: 0,
+        borderRadius: 0,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.y.toLocaleString()}` } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 } }, border: { color: 'rgba(245,237,217,0.06)' } },
+        y: {
+          min: 900,
+          grid: { color: 'rgba(245,237,217,0.04)' },
+          ticks: { font: { size: 9 }, callback: v => '$' + (v/1000).toFixed(1) + 'k' },
+          border: { display: false }
+        }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+
+  // ── 4. Shopping breakdown donut ──────────────────────
+  const shopLabels = ['Amazon','Fashion','Home Goods','Apple','Sephora'];
+  const shopValues = [3995, 2517, 1176, 1070, 509];
+  const shopColors = ['#5B9EC9','#D4B554','#1F4027','#C88FE0','#F05A28'];
+
+  new Chart(document.getElementById('shopDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: shopLabels,
+      datasets: [{
+        data: shopValues,
+        backgroundColor: shopColors,
+        borderWidth: 0,
+        hoverOffset: 4,
+      }]
+    },
+    options: {
+      cutout: '67%',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.toLocaleString('en-US',{maximumFractionDigits:0})}` } }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+
+  const shopLeg = document.getElementById('shopLegend');
+  shopLabels.forEach((l, i) => {
+    const pct = ((shopValues[i] / 9267) * 100).toFixed(0);
+    const el = document.createElement('div');
+    el.style.cssText = 'display:flex;align-items:center;justify-content:space-between';
+    el.innerHTML = `
+      <div style="display:flex;align-items:center;gap:6px">
+        <span style="width:7px;height:7px;border-radius:50%;background:${shopColors[i]};flex-shrink:0"></span>
+        <span style="font-size:10px;font-weight:500;letter-spacing:0.04em;opacity:0.7">${l}</span>
+      </div>
+      <span style="font-family:var(--font-serif);font-size:13px;font-weight:300;opacity:0.55">$${shopValues[i].toLocaleString()} <span style="font-family:var(--font-sans);font-size:9px;opacity:0.55">${pct}%</span></span>
+    `;
+    shopLeg.appendChild(el);
+  });
+
+  // ── 5. Grocery by month ──────────────────────────────
+  new Chart(document.getElementById('groceryChart'), {
+    type: 'line',
+    data: {
+      labels: ['Oct','Nov','Dec','Jan','Feb','Mar'],
+      datasets: [{
+        data: [714, 812, 735, 733, 793, 775],
+        borderColor: 'rgba(245,237,217,0.45)',
+        backgroundColor: 'rgba(245,237,217,0.04)',
+        borderWidth: 1.5,
+        pointRadius: 3,
+        pointBackgroundColor: 'rgba(245,237,217,0.6)',
+        fill: true,
+        tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.y.toLocaleString()}` } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 } }, border: { color: 'rgba(245,237,217,0.06)' } },
+        y: {
+          min: 600,
+          grid: { color: 'rgba(245,237,217,0.04)' },
+          ticks: { font: { size: 9 }, callback: v => '$' + v },
+          border: { display: false }
+        }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+
+  // ── 6. Fuel by month ─────────────────────────────────
+  new Chart(document.getElementById('fuelChart'), {
+    type: 'line',
+    data: {
+      labels: ['Oct','Nov','Dec','Jan','Feb','Mar'],
+      datasets: [{
+        data: [378, 396, 422, 386, 367, 400],
+        borderColor: 'rgba(245,237,217,0.28)',
+        backgroundColor: 'rgba(245,237,217,0.03)',
+        borderWidth: 1.5,
+        pointRadius: 3,
+        pointBackgroundColor: 'rgba(245,237,217,0.4)',
+        fill: true,
+        tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` $${ctx.parsed.y.toLocaleString()}` } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 9 } }, border: { color: 'rgba(245,237,217,0.06)' } },
+        y: {
+          min: 300,
+          grid: { color: 'rgba(245,237,217,0.04)' },
+          ticks: { font: { size: 9 }, callback: v => '$' + v },
+          border: { display: false }
+        }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+</script>
+
+</body>
+</html>

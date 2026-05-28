@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro — Functions & Structure</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" />
+  <style>
+    :root {
+      --crimson:    #A33030;
+      --crimson-dk: #7E2323;
+      --cream:      #F5EDD9;
+      --cream-dim:  rgba(245,237,217,0.55);
+      --near-black: #111111;
+      --surface:    #181818;
+      --surface-hi: #222222;
+      --navy:       #06042A;
+      --gold:       #D4B554;
+      --orange:     #F05A28;
+      --slate:      #5B9EC9;
+      --purple:     #C88FE0;
+      --forest:     #1F4027;
+      --indigo:     #1D3B6F;
+      --border:     rgba(245,237,217,0.07);
+      --border-hi:  rgba(245,237,217,0.14);
+      --font-serif: "ivyjournal", Georgia, serif;
+      --font-sans:  "Space Grotesk", "Inter", sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--near-black);
+      color: var(--cream);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── Nav ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--near-black);
+      z-index: 100;
+      animation: fadeIn 0.4s ease both;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 28px; height: 28px; }
+    .logo-text {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--cream);
+    }
+    .nav-right {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.28;
+    }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 40px 80px;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 56px 0 48px;
+      border-bottom: 1px solid var(--border);
+      animation: slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;
+      animation-delay: 0.05s;
+    }
+    .hero-eyebrow {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 12px;
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: 64px;
+      font-weight: 300;
+      letter-spacing: -0.04em;
+      line-height: 0.92;
+      color: var(--cream);
+      margin-bottom: 20px;
+      animation: numberIn 0.7s cubic-bezier(0.22,1,0.36,1) both;
+      animation-delay: 0.1s;
+    }
+    .hero-sub {
+      font-size: 13px;
+      opacity: 0.45;
+      max-width: 520px;
+      line-height: 1.65;
+    }
+
+    /* ── Section ── */
+    .section {
+      padding: 48px 0 0;
+      animation: slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .section-eyebrow {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: 36px;
+      font-weight: 300;
+      letter-spacing: -0.03em;
+      color: var(--cream);
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ── Category grid ── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      margin-bottom: 0;
+    }
+    @media (max-width: 900px) { .cat-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .cat-grid { grid-template-columns: 1fr; } }
+
+    .cat-card {
+      border: 1px solid var(--border);
+      padding: 24px 26px 28px;
+      position: relative;
+      transition: background 0.18s ease;
+    }
+    .cat-card:hover { background: var(--surface-hi); }
+
+    .cat-card-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 10px;
+    }
+    .cat-card-title {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      margin-bottom: 16px;
+    }
+
+    .item-list { list-style: none; }
+    .item-list li {
+      font-size: 12px;
+      font-weight: 400;
+      opacity: 0.55;
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(245,237,217,0.04);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .item-list li:last-child { border-bottom: none; }
+    .item-list li::before {
+      content: "";
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      background: var(--cream);
+      opacity: 0.3;
+      flex-shrink: 0;
+    }
+    .item-list .sub-item {
+      font-size: 11px;
+      opacity: 0.38;
+      padding: 3px 0 3px 16px;
+    }
+    .item-list .sub-item::before { opacity: 0.15; }
+
+    /* ── Color accents per section ── */
+    .accent-crimson .cat-card-label { color: var(--crimson); opacity: 1; }
+    .accent-gold     .cat-card-label { color: var(--gold); opacity: 1; }
+    .accent-slate    .cat-card-label { color: var(--slate); opacity: 1; }
+    .accent-forest   .cat-card-label { color: #4a8a5a; opacity: 1; }
+    .accent-indigo   .cat-card-label { color: #7b9fd4; opacity: 1; }
+    .accent-orange   .cat-card-label { color: var(--orange); opacity: 1; }
+    .accent-purple   .cat-card-label { color: var(--purple); opacity: 1; }
+
+    /* ── Functions row ── */
+    .fn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0;
+    }
+    @media (max-width: 640px) { .fn-grid { grid-template-columns: 1fr; } }
+
+    .fn-card {
+      border: 1px solid var(--border);
+      padding: 28px 30px;
+      transition: background 0.18s ease;
+    }
+    .fn-card:hover { background: var(--surface-hi); }
+
+    .fn-card-num {
+      font-family: var(--font-serif);
+      font-size: 48px;
+      font-weight: 300;
+      letter-spacing: -0.04em;
+      opacity: 0.1;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .fn-card-title {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      color: var(--cream);
+      margin-bottom: 10px;
+    }
+    .fn-card-desc {
+      font-size: 12px;
+      opacity: 0.45;
+      line-height: 1.65;
+    }
+    .fn-card-subs {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .fn-tag {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border: 1px solid var(--border-hi);
+      opacity: 0.55;
+    }
+
+    /* ── Prompt panel ── */
+    .prompt-panel {
+      border: 1px solid var(--border);
+      padding: 28px 30px;
+      margin-top: 0;
+      background: rgba(245,237,217,0.02);
+    }
+    .prompt-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+    .prompt-text {
+      font-size: 13px;
+      opacity: 0.6;
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    /* ── Flow strip ── */
+    .flow-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border: 1px solid var(--border);
+      margin-top: 0;
+    }
+    @media (max-width: 640px) { .flow-strip { grid-template-columns: 1fr; } }
+
+    .flow-tile {
+      padding: 22px 26px;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+    .flow-tile:last-child { border-right: none; }
+    .flow-tile-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      margin-bottom: 8px;
+    }
+    .flow-tile-val {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+    }
+    .flow-tile-items {
+      margin-top: 10px;
+      font-size: 11px;
+      opacity: 0.4;
+      line-height: 1.7;
+    }
+
+    /* ── Animations ── */
+    @keyframes fadeIn   { from { opacity: 0 } to { opacity: 1 } }
+    @keyframes slideUp  { from { opacity: 0; transform: translateY(16px) } to { opacity: 1; transform: translateY(0) } }
+    @keyframes numberIn { from { opacity: 0; transform: scale(0.96) } to { opacity: 1; transform: scale(1) } }
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+  <div class="logo">
+    <img src="../public/assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon"
+         onerror="this.style.display='none'" />
+    <span class="logo-text">Tesoro</span>
+  </div>
+  <span class="nav-right">Functions & Structure · v3</span>
+</nav>
+
+<div class="page">
+
+  <!-- ── Hero ── -->
+  <div class="hero">
+    <p class="hero-eyebrow">Reference Document</p>
+    <h1 class="hero-title">Functions &<br>Structure</h1>
+    <p class="hero-sub">The four core views of Tesoro, the budget category taxonomy, and the AI prompts that initialize each section on page load.</p>
+  </div>
+
+  <!-- ══════════════════════════════════
+       MAIN FUNCTIONS
+  ══════════════════════════════════ -->
+  <div class="section" style="animation-delay:0.10s">
+    <p class="section-eyebrow">Main Functions</p>
+    <h2 class="section-title">Four Core Views</h2>
+
+    <div class="fn-grid">
+
+      <div class="fn-card">
+        <div class="fn-card-num">01</div>
+        <p class="fn-card-title">Financial Brief</p>
+        <p class="fn-card-desc">Overall synopsis of financial activity in the data range — the home screen, auto-generated on load. A 3–5 sentence narrative with a time-of-day greeting.</p>
+        <div class="fn-card-subs">
+          <span class="fn-tag">Auto-generates</span>
+          <span class="fn-tag">Home screen</span>
+          <span class="fn-tag">LLM narrative</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-num">02</div>
+        <p class="fn-card-title">Net Worth</p>
+        <p class="fn-card-desc">Dashboard and analysis of overall financial picture. Assets minus liabilities. Visualizes the full holdings snapshot across all loaded data sources.</p>
+        <div class="fn-card-subs">
+          <span class="fn-tag">Assets</span>
+          <span class="fn-tag">Liabilities</span>
+          <span class="fn-tag">Dashboard</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-num">03</div>
+        <p class="fn-card-title">Investments</p>
+        <p class="fn-card-desc">Dashboard and analysis of the investment portfolio. Breakdowns by stocks/equities, Bitcoin, and property holdings.</p>
+        <div class="fn-card-subs">
+          <span class="fn-tag">Stocks</span>
+          <span class="fn-tag">Bitcoin</span>
+          <span class="fn-tag">Property</span>
+        </div>
+      </div>
+
+      <div class="fn-card">
+        <div class="fn-card-num">04</div>
+        <p class="fn-card-title">Spending</p>
+        <p class="fn-card-desc">Dashboard and analysis of spending across cash and credit accounts. Rich graphical charts with outlier callouts. Timeframe toggle: 1w · 1mo · 3mo · YTD.</p>
+        <div class="fn-card-subs">
+          <span class="fn-tag">1w</span>
+          <span class="fn-tag">1mo</span>
+          <span class="fn-tag">3mo</span>
+          <span class="fn-tag">YTD</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       BUDGET STRUCTURE
+  ══════════════════════════════════ -->
+  <div class="section" style="animation-delay:0.15s">
+    <p class="section-eyebrow">Budget</p>
+    <h2 class="section-title">Inflow · Outflow · Savings</h2>
+
+    <!-- Flow strip -->
+    <div class="flow-strip">
+      <div class="flow-tile">
+        <p class="flow-tile-label">Inflow</p>
+        <p class="flow-tile-val" style="color:var(--slate)">Income</p>
+        <p class="flow-tile-items">Radley Income<br>CS Contribution</p>
+      </div>
+      <div class="flow-tile">
+        <p class="flow-tile-label">Outflow</p>
+        <p class="flow-tile-val" style="color:var(--gold)">Expenses</p>
+        <p class="flow-tile-items">Taxes · Auto Withdrawals · Dining<br>Transport · Home · Health · Insurance<br>Child Expenses · Discretionary</p>
+      </div>
+      <div class="flow-tile">
+        <p class="flow-tile-label">Savings</p>
+        <p class="flow-tile-val" style="color:var(--forest)">Assets</p>
+        <p class="flow-tile-items">Stocks<br>Bitcoin<br>Property</p>
+      </div>
+    </div>
+
+    <!-- Outflow categories -->
+    <div class="cat-grid" style="margin-top:0">
+
+      <div class="cat-card accent-gold" style="animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.18s">
+        <p class="cat-card-label">Taxes</p>
+        <p class="cat-card-title">Tax Obligations</p>
+        <ul class="item-list">
+          <li>Tax Preparation</li>
+          <li>Tax Payments</li>
+        </ul>
+      </div>
+
+      <div class="cat-card accent-indigo" style="animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.20s">
+        <p class="cat-card-label">Auto Withdrawal Payments</p>
+        <p class="cat-card-title">Fixed Recurring</p>
+        <ul class="item-list">
+          <li>Subscriptions</li>
+          <li>Auto Pays</li>
+        </ul>
+      </div>
+
+      <div class="cat-card accent-forest" style="animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.22s">
+        <p class="cat-card-label">Dining / Food</p>
+        <p class="cat-card-title">Food & Grocery</p>
+        <ul class="item-list">
+          <li>Groceries
+            <ul class="item-list" style="display:block;margin-top:2px">
+              <li class="sub-item">Walmart, Publix, Sprouts, Whole Foods</li>
+            </ul>
+          </li>
+          <li>Dining Out</li>
+        </ul>
+      </div>
+
+      <div class="cat-card accent-slate" style="animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.24s">
+        <p class="cat-card-label">Transportation</p>
+        <p class="cat-card-title">Vehicle & Transit</p>
+        <ul class="item-list">
+          <li>Repairs</li>
+          <li>Gas</li>
+          <li>Washing</li>
+          <li>Non-Travel Uber</li>
+        </ul>
+      </div>
+
+      <div class="cat-card accent-crimson" style="animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.26s">
+        <p class="cat-card-label">Home Expenses</p>
+        <p class="cat-card-title">Housing & Property</p>
+        <ul class="item-list">
+          <li>Mortgage</li>
+          <li>Utilities</li>
+          <li>Housekeeping</li>
+          <li>Maintenance</li>
+          <li>Grounds Keeping</li>
+        </ul>
+      </div>
+
+      <div class="cat-card accent-orange" style="animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.28s">
+        <p class="cat-card-label">Health</p>
+        <p class="cat-card-title">Health & Wellness</p>
+        <ul class="item-list">
+          <li>Dentist</li>
+          <li>Medical</li>
+          <li>Gym / Yoga Memberships</li>
+          <li>Supplements / RX</li>
+        </ul>
+      </div>
+
+      <div class="cat-card accent-indigo" style="animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.30s">
+        <p class="cat-card-label">Insurance</p>
+        <p class="cat-card-title">Coverage</p>
+        <ul class="item-list">
+          <li>Car</li>
+          <li>Life</li>
+          <li>Health</li>
+        </ul>
+      </div>
+
+      <div class="cat-card accent-slate" style="animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.32s">
+        <p class="cat-card-label">Child Expenses</p>
+        <p class="cat-card-title">Family</p>
+        <ul class="item-list">
+          <li>Education</li>
+          <li>Childcare Services</li>
+        </ul>
+      </div>
+
+      <div class="cat-card accent-gold" style="animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.34s">
+        <p class="cat-card-label">Discretionary</p>
+        <p class="cat-card-title">Variable Spend</p>
+        <ul class="item-list">
+          <li>Travel</li>
+          <li>Shopping</li>
+          <li>Entertainment</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       AI PROMPTS
+  ══════════════════════════════════ -->
+  <div class="section" style="animation-delay:0.20s;padding-bottom:0">
+    <p class="section-eyebrow">Mastro Prompts</p>
+    <h2 class="section-title">Page-Load Instructions</h2>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+      <div class="prompt-panel" style="animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.22s">
+        <p class="prompt-label">Budget — on load</p>
+        <p class="prompt-text">"Organize the available data into the categories below and display a rich table-style view of an average month in each category according to the data."</p>
+      </div>
+      <div class="prompt-panel" style="border-left:none;animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.24s">
+        <p class="prompt-label">Financial Brief — on load</p>
+        <p class="prompt-text">"Look at the data provided and give a brief summary about the financial activity you observe. Include greeting according to what the time of day is — e.g. 'Good Morning.' A 3–5 sentence summary."</p>
+      </div>
+      <div class="prompt-panel" style="border-top:none;animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.26s">
+        <p class="prompt-label">Net Worth — on load</p>
+        <p class="prompt-text">"Generate a dashboard and give analysis of the overall financial picture in a statement at the top of the page. Then create a dashboard-style graphic showing assets and liabilities in the data set."</p>
+      </div>
+      <div class="prompt-panel" style="border-top:none;border-left:none;animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.28s">
+        <p class="prompt-label">Spending — on load</p>
+        <p class="prompt-text">"Generate a dashboard of spending across cash and credit accounts. Give insights about anything that stands out as an outlier. The goal is to put spending into perspective with rich graphic charts and items that seem out of the ordinary."</p>
+      </div>
+    </div>
+
+    <div class="prompt-panel" style="border-top:none;animation:slideUp 0.6s cubic-bezier(0.22,1,0.36,1) both;animation-delay:0.30s">
+      <p class="prompt-label">Investments — on load</p>
+      <p class="prompt-text">"Generate a dashboard of investment portfolio, breakdown by stocks, Bitcoin, and property."</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── Footer ── -->
+<div style="max-width:1100px;margin:0 auto;padding:28px 40px 48px;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid var(--border)">
+  <div class="logo">
+    <img src="../public/assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon"
+         onerror="this.style.display='none'" />
+    <span class="logo-text">Tesoro</span>
+  </div>
+  <p style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.22">Functions & Structure · v3 · 2026</p>
+</div>
+
+</body>
+</html>

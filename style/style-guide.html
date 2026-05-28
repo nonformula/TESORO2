@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro — Style Guide</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+
+    /* ── Style guide shell ────────────────────────────── */
+    .sg-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--near-black);
+      z-index: 100;
+      animation: fadeIn 0.4s ease both;
+    }
+    .sg-nav-links {
+      display: flex;
+      gap: 28px;
+    }
+    .sg-nav-link {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.32;
+      transition: opacity 0.2s;
+      cursor: pointer;
+    }
+    .sg-nav-link:hover { opacity: 0.85; }
+
+    .sg-body {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px 80px;
+    }
+
+    /* ── Section ── */
+    .sg-section {
+      padding: 64px 0 0;
+    }
+    .sg-section-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--crimson);
+      margin-bottom: 6px;
+    }
+    .sg-section-title {
+      font-family: var(--font-serif);
+      font-size: 38px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 32px;
+      color: var(--cream);
+    }
+    .sg-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 0 32px;
+    }
+
+    /* ── Color swatches ── */
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .swatch {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      min-height: 110px;
+      padding: 14px;
+      position: relative;
+      cursor: default;
+    }
+    .swatch-name {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      margin-bottom: 3px;
+    }
+    .swatch-hex {
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      opacity: 0.6;
+    }
+    .swatch-token {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      opacity: 0.45;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      margin-bottom: 2px;
+    }
+
+    /* ── Logo display ── */
+    .logo-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .logo-cell {
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    .logo-cell-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      text-align: center;
+    }
+
+    /* ── Type specimen ── */
+    .type-specimen {
+      border: 1px solid var(--border);
+      margin-bottom: 1px;
+    }
+    .type-row {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .type-row:last-child { border-bottom: none; }
+    .type-meta {
+      width: 160px;
+      flex-shrink: 0;
+    }
+    .type-meta-name {
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      opacity: 0.45;
+      margin-bottom: 3px;
+    }
+    .type-meta-spec {
+      font-size: 9px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      opacity: 0.28;
+      line-height: 1.6;
+    }
+    .type-sample { flex: 1; }
+
+    /* ── Card showcase ── */
+    .card-showcase {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .showcase-card {
+      min-height: 200px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* ── Component demos ── */
+    .component-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .component-cell {
+      padding: 28px;
+      background: var(--surface);
+    }
+    .component-cell-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.28;
+      margin-bottom: 20px;
+    }
+
+    /* ── Bar demo ── */
+    .demo-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .demo-bar-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      width: 88px;
+      flex-shrink: 0;
+    }
+    .demo-bar-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(245,237,217,0.07);
+    }
+    .demo-bar-fill { height: 100%; }
+    .demo-bar-amt {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 300;
+      width: 54px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── KV rows ── */
+    .demo-kv {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .demo-kv:last-child { border-bottom: none; }
+    .demo-kv-key {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.38;
+    }
+    .demo-kv-val {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 300;
+    }
+
+    /* ── Grid diagram ── */
+    .grid-diagram {
+      border: 1px solid var(--border);
+      padding: 32px;
+      margin-bottom: 32px;
+      background: var(--surface);
+    }
+    .grid-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+    .grid-cell {
+      height: 60px;
+      background: rgba(163,48,48,0.15);
+      border: 1px solid rgba(163,48,48,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+    .grid-cell.span2 { grid-column: span 2; background: rgba(91,158,201,0.12); border-color: rgba(91,158,201,0.3); }
+    .grid-cell.span3 { grid-column: span 3; background: rgba(212,181,84,0.1); border-color: rgba(212,181,84,0.3); }
+
+    /* ── Animation demo ── */
+    .anim-grid {
+      display: grid;
+      grid-template-columns: repeat(4,1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .anim-cell {
+      padding: 20px;
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .anim-cell-name {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
+    .anim-cell-spec {
+      font-size: 9px;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      opacity: 0.35;
+      line-height: 1.6;
+    }
+    .anim-cell-demo {
+      width: 32px;
+      height: 4px;
+      background: var(--crimson);
+      margin-top: 8px;
+    }
+
+    /* ── Dont grid ── */
+    .dont-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .dont-cell {
+      padding: 24px;
+      background: var(--surface);
+    }
+    .dont-cell-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .dont-pill {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+    }
+    .dont-pill--dont { background: rgba(240,90,40,0.15); color: var(--orange); }
+    .dont-pill--do   { background: rgba(212,181,84,0.15); color: var(--gold-lt, #E8CC72); }
+    .dont-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .dont-list li {
+      font-size: 12px;
+      line-height: 1.5;
+      opacity: 0.6;
+      padding-left: 14px;
+      position: relative;
+    }
+    .dont-list li::before {
+      content: "–";
+      position: absolute;
+      left: 0;
+      opacity: 0.35;
+    }
+
+    /* Grain badge */
+    .grain-demo {
+      position: relative;
+      height: 80px;
+      background: var(--crimson);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .grain-demo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+      background-size: 180px 180px;
+      opacity: 0.028;
+      pointer-events: none;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- Sticky nav -->
+<nav class="sg-nav">
+  <div class="logo">
+    <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" />
+    <span class="logo-text">Tesoro</span>
+  </div>
+  <div class="sg-nav-links">
+    <a href="#brand"      class="sg-nav-link">Brand</a>
+    <a href="#color"      class="sg-nav-link">Color</a>
+    <a href="#type"       class="sg-nav-link">Typography</a>
+    <a href="#cards"      class="sg-nav-link">Cards</a>
+    <a href="#components" class="sg-nav-link">Components</a>
+    <a href="#layout"     class="sg-nav-link">Layout</a>
+    <a href="#motion"     class="sg-nav-link">Motion</a>
+    <a href="#rules"      class="sg-nav-link">Rules</a>
+  </div>
+  <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;opacity:0.22">Design System · 2026</div>
+</nav>
+
+<div class="sg-body">
+
+  <!-- ── BRAND ─────────────────────────────────────────── -->
+  <section class="sg-section" id="brand">
+    <p class="sg-section-label">01 · Brand</p>
+    <h2 class="sg-section-title">Identity</h2>
+    <div class="sg-divider"></div>
+
+    <!-- Principle statement -->
+    <div style="background:var(--crimson);padding:36px 40px;margin-bottom:1px">
+      <p style="font-size:9px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;opacity:0.5;margin-bottom:12px">Aesthetic Principle</p>
+      <p style="font-family:var(--font-serif);font-size:28px;font-weight:300;line-height:1.3;letter-spacing:-0.01em;color:var(--cream);max-width:560px">Private intelligence briefing. Editorial, ceremonial, dark and rich. Not a fintech dashboard.</p>
+    </div>
+
+    <!-- Logo showcase -->
+    <div class="logo-row" style="margin-top:1px">
+      <div class="logo-cell" style="background:#F5EDD9">
+        <img src="../assets/design/png/tesoro_logo_01.png" alt="Tesoro wordmark" style="max-width:200px;width:100%" />
+        <p class="logo-cell-label" style="color:rgba(26,18,8,0.4)">Full Wordmark<br>On Cream</p>
+      </div>
+      <div class="logo-cell" style="background:var(--near-black)">
+        <div class="logo" style="animation:none">
+          <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" style="width:44px;height:44px" />
+          <span class="logo-text" style="font-size:28px">Tesoro</span>
+        </div>
+        <p class="logo-cell-label">Nav Lockup<br>On Dark</p>
+      </div>
+      <div class="logo-cell" style="background:var(--surface)">
+        <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="T icon" style="width:56px;height:56px" />
+        <p class="logo-cell-label">Icon Mark<br>Minimum 28×28px</p>
+      </div>
+    </div>
+
+    <!-- Voice -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:1px">
+      <div style="padding:28px;background:var(--surface)">
+        <p style="font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:14px">Voice — Use</p>
+        <p style="font-size:13px;line-height:1.7;opacity:0.65">Quiet authority. Concise. Declarative.<br>Financial prose, not marketing copy.<br>Lowercase labels with sentence fragments.<br>Numbers speak for themselves.</p>
+      </div>
+      <div style="padding:28px;background:var(--surface)">
+        <p style="font-size:9px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--orange);margin-bottom:14px">Voice — Avoid</p>
+        <p style="font-size:13px;line-height:1.7;opacity:0.65">Exclamation marks. Emoji. Gamified language.<br>"Great job!", "You saved!", "Keep it up!"<br>Progress celebration. Confetti. Pulse rings.<br>Marketing superlatives.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── COLOR ─────────────────────────────────────────── -->
+  <section class="sg-section" id="color">
+    <p class="sg-section-label">02 · Color</p>
+    <h2 class="sg-section-title">Palette</h2>
+    <div class="sg-divider"></div>
+
+    <!-- Primary -->
+    <p style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35;margin-bottom:8px">Primary</p>
+    <div class="swatch-grid" style="margin-bottom:1px">
+      <div class="swatch" style="background:#A33030;color:var(--cream)">
+        <p class="swatch-token">--crimson</p>
+        <p class="swatch-name">Crimson</p>
+        <p class="swatch-hex">#A33030</p>
+      </div>
+      <div class="swatch" style="background:#F5EDD9;color:#1a1208">
+        <p class="swatch-token">--cream</p>
+        <p class="swatch-name">Cream</p>
+        <p class="swatch-hex">#F5EDD9</p>
+      </div>
+      <div class="swatch" style="background:#111111;color:var(--cream);border:1px solid rgba(245,237,217,0.06)">
+        <p class="swatch-token">--near-black</p>
+        <p class="swatch-name">Near Black</p>
+        <p class="swatch-hex">#111111</p>
+      </div>
+      <div class="swatch" style="background:#181818;color:var(--cream);border:1px solid rgba(245,237,217,0.06)">
+        <p class="swatch-token">--surface</p>
+        <p class="swatch-name">Surface</p>
+        <p class="swatch-hex">#181818</p>
+      </div>
+    </div>
+
+    <!-- Secondary -->
+    <p style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35;margin-bottom:8px;margin-top:24px">Semantic</p>
+    <div class="swatch-grid">
+      <div class="swatch" style="background:#06042A;color:var(--cream)">
+        <p class="swatch-token">--navy</p>
+        <p class="swatch-name">Navy</p>
+        <p class="swatch-hex">#06042A</p>
+      </div>
+      <div class="swatch" style="background:#D4B554;color:#1a1208">
+        <p class="swatch-token">--gold</p>
+        <p class="swatch-name">Gold</p>
+        <p class="swatch-hex">#D4B554</p>
+      </div>
+      <div class="swatch" style="background:#F05A28;color:var(--cream)">
+        <p class="swatch-token">--orange</p>
+        <p class="swatch-name">Orange</p>
+        <p class="swatch-hex">#F05A28</p>
+      </div>
+      <div class="swatch" style="background:#5B9EC9;color:var(--cream)">
+        <p class="swatch-token">--slate</p>
+        <p class="swatch-name">Slate Blue</p>
+        <p class="swatch-hex">#5B9EC9</p>
+      </div>
+      <div class="swatch" style="background:#1F4027;color:var(--cream)">
+        <p class="swatch-token">--forest</p>
+        <p class="swatch-name">Forest</p>
+        <p class="swatch-hex">#1F4027</p>
+      </div>
+      <div class="swatch" style="background:#1D3B6F;color:var(--cream)">
+        <p class="swatch-token">--indigo</p>
+        <p class="swatch-name">Indigo</p>
+        <p class="swatch-hex">#1D3B6F</p>
+      </div>
+      <div class="swatch" style="background:#C88FE0;color:#1a1208">
+        <p class="swatch-token">--purple</p>
+        <p class="swatch-name">Purple</p>
+        <p class="swatch-hex">#C88FE0</p>
+      </div>
+    </div>
+
+    <!-- Card color map -->
+    <p style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35;margin-bottom:8px;margin-top:24px">Card Color → Semantic Use</p>
+    <div style="border:1px solid var(--border)">
+      <div style="display:grid;grid-template-columns:80px 1fr 1fr;border-bottom:1px solid var(--border)">
+        <div style="padding:10px 14px;background:#A33030;display:flex;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:0.08em;color:var(--cream)">Crimson</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:10px;font-family:monospace;opacity:0.5">.card--crimson</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:11px;opacity:0.6">Hero cards, primary KPI, main stat</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:80px 1fr 1fr;border-bottom:1px solid var(--border)">
+        <div style="padding:10px 14px;background:#06042A;display:flex;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:0.08em;color:var(--cream)">Navy</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:10px;font-family:monospace;opacity:0.5">.card--navy</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:11px;opacity:0.6">Portfolio, donut charts, equity</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:80px 1fr 1fr;border-bottom:1px solid var(--border)">
+        <div style="padding:10px 14px;background:#D4B554;display:flex;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:0.08em;color:#1a1208">Gold</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:10px;font-family:monospace;opacity:0.5">.card--gold</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:11px;opacity:0.6">Spending insights, top category · text is #1a1208</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:80px 1fr 1fr;border-bottom:1px solid var(--border)">
+        <div style="padding:10px 14px;background:#1F4027;display:flex;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:0.08em;color:var(--cream)">Forest</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:10px;font-family:monospace;opacity:0.5">.card--forest</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:11px;opacity:0.6">Investment, growth, market data</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:80px 1fr 1fr;border-bottom:1px solid var(--border)">
+        <div style="padding:10px 14px;background:#1D3B6F;display:flex;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:0.08em;color:var(--cream)">Indigo</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:10px;font-family:monospace;opacity:0.5">.card--indigo</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:11px;opacity:0.6">Recurring charges, fixed costs</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:80px 1fr 1fr">
+        <div style="padding:10px 14px;background:#181818;border:1px solid rgba(245,237,217,0.07);display:flex;align-items:center"><span style="font-size:9px;font-weight:600;letter-spacing:0.08em;color:var(--cream)">Dark</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:10px;font-family:monospace;opacity:0.5">.card--dark</span></div>
+        <div style="padding:10px 14px;border-left:1px solid var(--border)"><span style="font-size:11px;opacity:0.6">Data tables, charts, detail breakdown</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TYPOGRAPHY ─────────────────────────────────────── -->
+  <section class="sg-section" id="type">
+    <p class="sg-section-label">03 · Typography</p>
+    <h2 class="sg-section-title">Type System</h2>
+    <div class="sg-divider"></div>
+
+    <!-- Font faces -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-bottom:24px">
+      <div style="padding:36px;background:var(--surface)">
+        <p style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35;margin-bottom:16px">Display — IvyJournal</p>
+        <p style="font-family:var(--font-serif);font-size:52px;font-weight:300;line-height:1;letter-spacing:-0.02em;color:var(--cream)">$8,503</p>
+        <p style="font-family:var(--font-serif);font-size:28px;font-weight:300;color:var(--cream);margin-top:8px">Good morning.</p>
+        <p style="font-family:var(--font-serif);font-size:16px;font-weight:300;color:var(--cream);margin-top:8px;opacity:0.6">Loan #0213535487</p>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+          <p style="font-size:10px;font-family:monospace;opacity:0.35;line-height:1.8">Adobe Typekit: jal8uea<br>CSS name: "ivyjournal" (no hyphen)<br>Weight: 300 only</p>
+        </div>
+      </div>
+      <div style="padding:36px;background:var(--surface)">
+        <p style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35;margin-bottom:16px">UI — Space Grotesk</p>
+        <p style="font-family:var(--font-sans);font-size:16px;font-weight:600;letter-spacing:0.02em;color:var(--cream)">Total Spend · March 2026</p>
+        <p style="font-family:var(--font-sans);font-size:13px;font-weight:400;color:var(--cream);margin-top:8px;opacity:0.65;line-height:1.6">103 transactions across 10 categories. Merchandise was the top category at $1,847 for the month.</p>
+        <p style="font-family:var(--font-sans);font-size:9px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;color:var(--cream);margin-top:12px;opacity:0.4">TOP CATEGORY</p>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
+          <p style="font-size:10px;font-family:monospace;opacity:0.35;line-height:1.8">Google Fonts: Space Grotesk<br>Weights: 300, 400, 500, 600<br>Used for all labels, body, UI</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scale -->
+    <div class="type-specimen">
+      <div class="type-row">
+        <div class="type-meta"><p class="type-meta-name">Hero Number</p><p class="type-meta-spec">serif / 76–84px<br>weight 300<br>-0.04em tracking</p></div>
+        <div class="type-sample"><span style="font-family:var(--font-serif);font-size:72px;font-weight:300;letter-spacing:-0.04em;line-height:1">$8,503</span></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><p class="type-meta-name">Large Stat</p><p class="type-meta-spec">serif / 52–68px<br>weight 300<br>-0.03em tracking</p></div>
+        <div class="type-sample"><span style="font-family:var(--font-serif);font-size:56px;font-weight:300;letter-spacing:-0.03em;line-height:1">$1,504</span></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><p class="type-meta-name">Medium Stat</p><p class="type-meta-spec">serif / 26–32px<br>weight 300<br>-0.02em tracking</p></div>
+        <div class="type-sample"><span style="font-family:var(--font-serif);font-size:28px;font-weight:300;letter-spacing:-0.02em">$22,775</span></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><p class="type-meta-name">Inline Figure</p><p class="type-meta-spec">serif / 16–18px<br>weight 300<br>-0.01em tracking</p></div>
+        <div class="type-sample"><span style="font-family:var(--font-serif);font-size:17px;font-weight:300;letter-spacing:-0.01em">$629.35</span></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><p class="type-meta-name">Card Label</p><p class="type-meta-spec">sans / 9px<br>weight 500<br>0.18em · UPPERCASE<br>opacity 0.45</p></div>
+        <div class="type-sample"><span style="font-size:9px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;opacity:0.45">Outstanding Principal</span></div>
+      </div>
+      <div class="type-row">
+        <div class="type-meta"><p class="type-meta-name">Body / Note</p><p class="type-meta-spec">sans / 12–13px<br>weight 400<br>line-height 1.6</p></div>
+        <div class="type-sample"><span style="font-size:13px;line-height:1.6;opacity:0.65">At 7.125%, only 11¢ of every dollar reduces the principal. 72¢ goes to interest each month.</span></div>
+      </div>
+      <div class="type-row" style="border-bottom:none">
+        <div class="type-meta"><p class="type-meta-name">Badge</p><p class="type-meta-spec">sans / 8–9px<br>weight 700<br>0.14em · UPPERCASE</p></div>
+        <div class="type-sample" style="display:flex;gap:10px;align-items:center">
+          <span class="insight-badge insight-badge--high">High</span>
+          <span class="insight-badge insight-badge--medium">Medium</span>
+          <span class="insight-badge insight-badge--low">Low</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CARDS ─────────────────────────────────────────── -->
+  <section class="sg-section" id="cards">
+    <p class="sg-section-label">04 · Cards</p>
+    <h2 class="sg-section-title">Card Variants</h2>
+    <div class="sg-divider"></div>
+
+    <div class="card-showcase">
+      <!-- Crimson -->
+      <div class="showcase-card card--crimson">
+        <div>
+          <p class="card-label">Outstanding Principal</p>
+          <p style="font-family:var(--font-serif);font-size:42px;font-weight:300;letter-spacing:-0.03em;line-height:0.95">$682,609</p>
+          <p style="font-size:11px;opacity:0.4;margin-top:6px">Newrez LLC · Loan #0213535487</p>
+        </div>
+        <p style="font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35">.card--crimson — Hero / Primary KPI</p>
+      </div>
+
+      <!-- Gold -->
+      <div class="showcase-card card--gold">
+        <div>
+          <p class="card-label" style="color:#1a1208">Top Category</p>
+          <p style="font-family:var(--font-serif);font-size:42px;font-weight:300;letter-spacing:-0.03em;line-height:0.95;color:#1a1208">$1,504</p>
+          <p style="font-size:11px;opacity:0.55;margin-top:6px;color:#1a1208">Restaurants · 31 transactions</p>
+        </div>
+        <p style="font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;opacity:0.3;color:#1a1208">.card--gold — Spending Insights</p>
+      </div>
+
+      <!-- Navy -->
+      <div class="showcase-card card--navy">
+        <div>
+          <p class="card-label">Spend by Category</p>
+          <p style="font-family:var(--font-serif);font-size:42px;font-weight:300;letter-spacing:-0.03em;line-height:0.95">10 cats</p>
+          <p style="font-size:11px;opacity:0.4;margin-top:6px">March 2026 · all types</p>
+        </div>
+        <p style="font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35">.card--navy — Portfolio / Donut</p>
+      </div>
+
+      <!-- Forest -->
+      <div class="showcase-card card--forest">
+        <div>
+          <p class="card-label">Investments</p>
+          <p style="font-family:var(--font-serif);font-size:42px;font-weight:300;letter-spacing:-0.03em;line-height:0.95">+14.2%</p>
+          <p style="font-size:11px;opacity:0.4;margin-top:6px">YTD return · Schwab portfolio</p>
+        </div>
+        <p style="font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35">.card--forest — Growth / Investment</p>
+      </div>
+
+      <!-- Indigo -->
+      <div class="showcase-card card--indigo">
+        <div>
+          <p class="card-label">Recurring Charges</p>
+          <p style="font-family:var(--font-serif);font-size:42px;font-weight:300;letter-spacing:-0.03em;line-height:0.95">$1,260</p>
+          <p style="font-size:11px;opacity:0.4;margin-top:6px">Services · March 2026</p>
+        </div>
+        <p style="font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35">.card--indigo — Fixed / Recurring</p>
+      </div>
+
+      <!-- Dark -->
+      <div class="showcase-card card--dark" style="border:1px solid var(--border)">
+        <div>
+          <p class="card-label">Top Charges</p>
+          <p style="font-family:var(--font-serif);font-size:42px;font-weight:300;letter-spacing:-0.03em;line-height:0.95">07 items</p>
+          <p style="font-size:11px;opacity:0.4;margin-top:6px">Single largest transactions</p>
+        </div>
+        <p style="font-size:9px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;opacity:0.35">.card--dark — Data / Tables / Charts</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── COMPONENTS ─────────────────────────────────────── -->
+  <section class="sg-section" id="components">
+    <p class="sg-section-label">05 · Components</p>
+    <h2 class="sg-section-title">UI Components</h2>
+    <div class="sg-divider"></div>
+
+    <div class="component-grid">
+
+      <!-- Card Label -->
+      <div class="component-cell">
+        <p class="component-cell-label">Card Label</p>
+        <p class="card-label">Outstanding Principal</p>
+        <p style="font-size:10px;font-family:monospace;opacity:0.3;margin-top:12px;line-height:1.8">9px · weight 500 · 0.18em<br>UPPERCASE · opacity 0.45<br>margin-bottom 10px</p>
+      </div>
+
+      <!-- Insight Badges -->
+      <div class="component-cell">
+        <p class="component-cell-label">Insight Badges</p>
+        <div style="display:flex;gap:8px;margin-bottom:16px">
+          <span class="insight-badge insight-badge--high">High</span>
+          <span class="insight-badge insight-badge--medium">Medium</span>
+          <span class="insight-badge insight-badge--low">Low</span>
+        </div>
+        <p style="font-size:10px;font-family:monospace;opacity:0.3;line-height:1.8">insight-badge--high → orange tint<br>insight-badge--medium → gold tint<br>insight-badge--low → cream/dim</p>
+      </div>
+
+      <!-- Horizontal bars -->
+      <div class="component-cell">
+        <p class="component-cell-label">Category Bar Row</p>
+        <div class="demo-bar-row">
+          <span class="demo-bar-label">Merchandise</span>
+          <div class="demo-bar-track"><div class="demo-bar-fill" style="width:100%;background:var(--slate)"></div></div>
+          <span class="demo-bar-amt">$1,847</span>
+        </div>
+        <div class="demo-bar-row">
+          <span class="demo-bar-label">Restaurants</span>
+          <div class="demo-bar-track"><div class="demo-bar-fill" style="width:81%;background:var(--gold)"></div></div>
+          <span class="demo-bar-amt">$1,504</span>
+        </div>
+        <div class="demo-bar-row">
+          <span class="demo-bar-label">Health Care</span>
+          <div class="demo-bar-track"><div class="demo-bar-fill" style="width:80%;background:var(--orange)"></div></div>
+          <span class="demo-bar-amt">$1,484</span>
+        </div>
+        <p style="font-size:10px;font-family:monospace;opacity:0.3;margin-top:12px">bar height: 4px · track: rgba(cream, 0.07)</p>
+      </div>
+
+      <!-- KV rows -->
+      <div class="component-cell">
+        <p class="component-cell-label">Key-Value Row</p>
+        <div class="demo-kv">
+          <span class="demo-kv-key">Rate</span>
+          <span class="demo-kv-val">7.125%</span>
+        </div>
+        <div class="demo-kv">
+          <span class="demo-kv-key">Matures</span>
+          <span class="demo-kv-val">July 2054</span>
+        </div>
+        <div class="demo-kv">
+          <span class="demo-kv-key">Interest</span>
+          <span class="demo-kv-val" style="color:var(--orange)">$16,249</span>
+        </div>
+        <p style="font-size:10px;font-family:monospace;opacity:0.3;margin-top:12px">key: 10px sans 0.1em UPPER<br>val: 18px serif weight 300</p>
+      </div>
+
+      <!-- Metric strip tile -->
+      <div class="component-cell">
+        <p class="component-cell-label">Metric Strip Tile</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)">
+          <div style="padding:18px;background:var(--near-black)">
+            <div style="font-family:var(--font-serif);font-size:28px;font-weight:300;letter-spacing:-0.02em;color:var(--orange)">$1,294</div>
+            <div style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.32;margin-top:4px">Biggest Charge</div>
+          </div>
+          <div style="padding:18px;background:var(--near-black);border-left:1px solid var(--border)">
+            <div style="font-family:var(--font-serif);font-size:28px;font-weight:300;letter-spacing:-0.02em;color:var(--gold)">103</div>
+            <div style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.32;margin-top:4px">Transactions</div>
+          </div>
+        </div>
+        <p style="font-size:10px;font-family:monospace;opacity:0.3;margin-top:12px">4 across · border-right dividers<br>border-top: 1px solid --border</p>
+      </div>
+
+      <!-- Insight card -->
+      <div class="component-cell">
+        <p class="component-cell-label">Insight Card</p>
+        <div class="insight-card">
+          <span class="insight-badge insight-badge--high">High Priority</span>
+          <p class="insight-card-title">Dental spending spike in March</p>
+          <p class="insight-card-summary">$1,294 single charge at Tooth Doctor on Mar 27 — 87% above your average health month.</p>
+          <p class="insight-card-rec">→ Consider a dental savings plan to smooth large annual charges.</p>
+          <p class="insight-confidence">Confidence 92%</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Grain texture -->
+    <p style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35;margin-bottom:8px">Global Grain Texture (body::before)</p>
+    <div class="grain-demo">
+      <p style="font-family:var(--font-serif);font-size:22px;font-weight:300;color:var(--cream);position:relative;z-index:1">Opacity 0.028 — adds richness, never increase above 0.04</p>
+    </div>
+  </section>
+
+  <!-- ── LAYOUT ─────────────────────────────────────────── -->
+  <section class="sg-section" id="layout">
+    <p class="sg-section-label">06 · Layout</p>
+    <h2 class="sg-section-title">Grid System</h2>
+    <div class="sg-divider"></div>
+
+    <div class="grid-diagram">
+      <p style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35;margin-bottom:16px">Standard 3-column report layout</p>
+      <div class="grid-demo">
+        <div class="grid-cell">Card 1</div>
+        <div class="grid-cell">Card 2</div>
+        <div class="grid-cell">Card 3</div>
+        <div class="grid-cell">Card 4</div>
+        <div class="grid-cell span2">Card 5 (span 2)</div>
+        <div class="grid-cell span3">Card 6 (span 3 — full width)</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:16px">
+        <div style="height:36px;background:rgba(212,181,84,0.1);border:1px solid rgba(212,181,84,0.3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;opacity:0.7">Tile 1</div>
+        <div style="height:36px;background:rgba(212,181,84,0.1);border:1px solid rgba(212,181,84,0.3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;opacity:0.7">Tile 2</div>
+        <div style="height:36px;background:rgba(212,181,84,0.1);border:1px solid rgba(212,181,84,0.3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;opacity:0.7">Tile 3</div>
+        <div style="height:36px;background:rgba(212,181,84,0.1);border:1px solid rgba(212,181,84,0.3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;opacity:0.7">Tile 4</div>
+      </div>
+      <p style="font-size:10px;font-family:monospace;opacity:0.35;line-height:2">
+        grid-template-columns: 1fr 1fr 1fr · gap: 0 · max-width: 1400px<br>
+        Cards are flush — no gutters. Border: 1px solid --border between cells.<br>
+        Metric strip: 4 columns · border-top: 1px solid --border
+      </p>
+    </div>
+
+    <!-- Spacing rules -->
+    <div style="border:1px solid var(--border);padding:28px;background:var(--surface)">
+      <p style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35;margin-bottom:16px">Shape & Spacing Rules</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px">
+        <div>
+          <p style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--orange);margin-bottom:8px">Border Radius</p>
+          <p style="font-family:monospace;font-size:14px;color:var(--cream);margin-bottom:4px">--radius: 0px</p>
+          <p style="font-size:11px;opacity:0.5;line-height:1.5">Zero everywhere. Sharp corners signal document, not app.</p>
+        </div>
+        <div>
+          <p style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--orange);margin-bottom:8px">Card Gap</p>
+          <p style="font-family:monospace;font-size:14px;color:var(--cream);margin-bottom:4px">--gap: 0px</p>
+          <p style="font-size:11px;opacity:0.5;line-height:1.5">Cards are flush. Grid is a unified surface, not floating tiles.</p>
+        </div>
+        <div>
+          <p style="font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--orange);margin-bottom:8px">Shadows</p>
+          <p style="font-family:monospace;font-size:14px;color:var(--cream);margin-bottom:4px">none</p>
+          <p style="font-size:11px;opacity:0.5;line-height:1.5">No drop shadows or glow effects. Hover uses translateY(-2px) only.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MOTION ─────────────────────────────────────────── -->
+  <section class="sg-section" id="motion">
+    <p class="sg-section-label">07 · Motion</p>
+    <h2 class="sg-section-title">Animation</h2>
+    <div class="sg-divider"></div>
+
+    <div class="anim-grid">
+      <div class="anim-cell">
+        <p class="anim-cell-name">cardIn</p>
+        <p class="anim-cell-spec">opacity 0→1<br>translateY(18px→0)<br>0.6s · spring easing<br>animation: cardIn 0.6s both</p>
+        <p style="font-size:9px;opacity:0.35;margin-top:6px">Used on all cards</p>
+      </div>
+      <div class="anim-cell">
+        <p class="anim-cell-name">numberIn</p>
+        <p class="anim-cell-spec">opacity 0→1<br>translateY(24px→0)<br>scale(0.96→1)<br>0.7s · spring easing</p>
+        <p style="font-size:9px;opacity:0.35;margin-top:6px">Hero KPI numbers only</p>
+      </div>
+      <div class="anim-cell">
+        <p class="anim-cell-name">fadeIn</p>
+        <p class="anim-cell-spec">opacity 0→1<br>0.4–0.5s · ease<br>Used for nav,<br>labels, subtitles</p>
+        <p style="font-size:9px;opacity:0.35;margin-top:6px">Nav + supporting text</p>
+      </div>
+      <div class="anim-cell">
+        <p class="anim-cell-name">slideUp</p>
+        <p class="anim-cell-spec">opacity 0→1<br>translateY(10px→0)<br>0.6s · spring easing<br>Input + content blocks</p>
+        <p style="font-size:9px;opacity:0.35;margin-top:6px">Login box, panels</p>
+      </div>
+    </div>
+
+    <!-- Stagger -->
+    <div style="border:1px solid var(--border);padding:28px;background:var(--surface);margin-top:1px">
+      <p style="font-size:9px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35;margin-bottom:16px">Stagger Pattern</p>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:80px;height:4px;background:var(--crimson)"></div>
+          <span style="font-size:11px;font-family:monospace;opacity:0.55">Card 1: animation-delay: 0.05s</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:80px;height:4px;background:var(--gold)"></div>
+          <span style="font-size:11px;font-family:monospace;opacity:0.55">Card 2: animation-delay: 0.10s</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:80px;height:4px;background:var(--slate)"></div>
+          <span style="font-size:11px;font-family:monospace;opacity:0.55">Card 3: animation-delay: 0.15s</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:80px;height:4px;background:var(--indigo)"></div>
+          <span style="font-size:11px;font-family:monospace;opacity:0.55">Card N: delay increments +0.05s</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <div style="width:80px;height:4px;background:var(--orange)"></div>
+          <span style="font-size:11px;font-family:monospace;opacity:0.55">Metric strip: 0.40–0.55s</span>
+        </div>
+      </div>
+      <p style="font-size:10px;font-family:monospace;opacity:0.3;margin-top:14px">Easing: cubic-bezier(0.22, 1, 0.36, 1) — always · "animation: X both" — always</p>
+    </div>
+  </section>
+
+  <!-- ── RULES ─────────────────────────────────────────── -->
+  <section class="sg-section" id="rules">
+    <p class="sg-section-label">08 · Rules</p>
+    <h2 class="sg-section-title">Do's & Don'ts</h2>
+    <div class="sg-divider"></div>
+
+    <div class="dont-grid">
+      <div class="dont-cell">
+        <div class="dont-cell-header">
+          <span class="dont-pill dont-pill--do">Do</span>
+        </div>
+        <ul class="dont-list">
+          <li>Use IvyJournal weight 300 for all financial figures</li>
+          <li>Keep border-radius at exactly 0px throughout</li>
+          <li>Keep gap between cards at 0 — flush grid only</li>
+          <li>Use opacity as hierarchy (100% → 45% → 30%)</li>
+          <li>Write card labels in UPPERCASE with 0.18em tracking</li>
+          <li>Use the defined color tokens — never ad-hoc hex values</li>
+          <li>Apply grain overlay on all pages via body::before</li>
+          <li>Stack animations with 0.05s stagger increments</li>
+          <li>Use cubic-bezier(0.22, 1, 0.36, 1) for all motion</li>
+          <li>Use dark text (#1a1208) on gold cards, not cream</li>
+          <li>Load both fonts in &lt;head&gt; before any CSS</li>
+          <li>Keep chart borders at 0 and grid lines near-invisible</li>
+        </ul>
+      </div>
+      <div class="dont-cell">
+        <div class="dont-cell-header">
+          <span class="dont-pill dont-pill--dont">Don't</span>
+        </div>
+        <ul class="dont-list">
+          <li>Add border-radius to cards, inputs, or buttons</li>
+          <li>Add box-shadow or glow effects to any element</li>
+          <li>Use Space Grotesk for large financial figures</li>
+          <li>Use white (#FFFFFF) as a background — always near-black or variants</li>
+          <li>Place the Tesoro logo on a light background</li>
+          <li>Use more than 2 typefaces in the same page</li>
+          <li>Increase grain overlay opacity above 0.04</li>
+          <li>Add gutters between cards in the grid</li>
+          <li>Use bold weight numbers anywhere in the UI</li>
+          <li>Write "ivyjournal" with a hyphen (CSS name breaks)</li>
+          <li>Use emoji in any UI text or label</li>
+          <li>Add exclamation marks or congratulatory copy</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer stamp -->
+    <div style="margin-top:64px;padding-top:32px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:baseline">
+      <div class="logo" style="animation:none">
+        <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" />
+        <span class="logo-text">Tesoro</span>
+      </div>
+      <p style="font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;opacity:0.25">Design System · April 2026</p>
+    </div>
+  </section>
+
+</div><!-- /sg-body -->
+</body>
+</html>

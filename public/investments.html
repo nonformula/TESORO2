@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro — Investment Portfolio</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+
+    /* ── Report nav ── */
+    .report-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: var(--near-black);
+      z-index: 100;
+      animation: fadeIn 0.4s ease both;
+    }
+    .report-nav-right {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.28;
+    }
+
+    /* ── Grid ── */
+    .report-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    @media (max-width: 1080px) {
+      .report-grid { grid-template-columns: 1fr 1fr; }
+      .span-3 { grid-column: span 2 !important; }
+    }
+    @media (max-width: 640px) {
+      .report-grid { grid-template-columns: 1fr; }
+      .span-2, .span-3 { grid-column: span 1 !important; }
+    }
+
+    /* ── Card inner padding ── */
+    .card-inner { padding: 28px; height: 100%; display: flex; flex-direction: column; }
+    .card-inner-lg { padding: 36px; height: 100%; display: flex; flex-direction: column; }
+
+    /* ── Hero stat ── */
+    .hero-num {
+      font-family: var(--font-serif);
+      font-size: 76px;
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      animation: numberIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+      animation-delay: 0.1s;
+    }
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 46px;
+      font-weight: 300;
+      line-height: 0.92;
+      letter-spacing: -0.03em;
+    }
+    .stat-num-md {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .stat-sub {
+      font-size: 11px;
+      opacity: 0.38;
+      letter-spacing: 0.04em;
+      margin-top: 6px;
+    }
+
+    /* ── Metric strip ── */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--border);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .metric-tile {
+      padding: 18px 22px;
+      border-right: 1px solid var(--border);
+    }
+    .metric-tile:last-child { border-right: none; }
+    .metric-value {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .metric-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.32;
+      margin-top: 5px;
+    }
+
+    /* ── Chart wrappers ── */
+    .donut-wrap {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin: 0 auto;
+    }
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      text-align: center;
+    }
+    .donut-val {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      font-weight: 300;
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .donut-lbl {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.38;
+      margin-top: 3px;
+    }
+
+    /* ── Legend ── */
+    .chart-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .legend-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      flex-shrink: 0;
+    }
+    .legend-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      flex: 1;
+    }
+    .legend-pct {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 300;
+    }
+    .legend-val {
+      font-size: 10px;
+      opacity: 0.35;
+      text-align: right;
+    }
+
+    /* ── Position rows ── */
+    .pos-row {
+      display: grid;
+      grid-template-columns: 48px 1fr auto auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .pos-row:last-child { border-bottom: none; }
+    .pos-ticker {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+    }
+    .pos-name {
+      font-size: 10px;
+      opacity: 0.38;
+      letter-spacing: 0.02em;
+      margin-top: 2px;
+    }
+    .pos-val {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      text-align: right;
+    }
+    .pos-gain {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-align: right;
+    }
+    .pos-gain.positive { color: var(--slate); }
+    .pos-gain.neutral  { color: var(--gold); }
+
+    /* ── Gain bar rows ── */
+    .gain-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .gain-row-label {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 300;
+      width: 56px;
+      flex-shrink: 0;
+    }
+    .gain-bar-track {
+      flex: 1;
+      height: 3px;
+      background: rgba(245,237,217,0.07);
+    }
+    .gain-bar-fill { height: 100%; }
+    .gain-row-amt {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 300;
+      width: 80px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+    .gain-row-pct {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      width: 44px;
+      text-align: right;
+      flex-shrink: 0;
+      opacity: 0.55;
+    }
+
+    /* ── Account table ── */
+    .acct-table { width: 100%; border-collapse: collapse; }
+    .acct-table th {
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.28;
+      padding: 0 0 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .acct-table th:not(:first-child) { text-align: right; }
+    .acct-table td {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .acct-table tr:last-child td { border-bottom: none; }
+    .acct-table td:not(:first-child) { text-align: right; }
+    .td-acct {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      opacity: 0.75;
+    }
+    .td-sub {
+      font-size: 9px;
+      opacity: 0.28;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+    .td-val {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+    }
+    .td-gain {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      margin-top: 2px;
+    }
+    .td-gain.pos { color: var(--slate); }
+
+    /* ── All-positions full table ── */
+    .full-table { width: 100%; border-collapse: collapse; }
+    .full-table th {
+      font-size: 8px;
+      font-weight: 600;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      opacity: 0.28;
+      padding: 0 8px 10px 0;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+    .full-table th:not(:first-child):not(:nth-child(2)) { text-align: right; }
+    .full-table td {
+      padding: 9px 8px 9px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+    }
+    .full-table tr:last-child td { border-bottom: none; }
+    .full-table td:not(:first-child):not(:nth-child(2)) { text-align: right; }
+    .ft-symbol {
+      font-family: var(--font-serif);
+      font-size: 15px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+    }
+    .ft-num {
+      font-family: var(--font-serif);
+      font-size: 15px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+    }
+    .ft-pos-gain { color: var(--slate); font-weight: 500; font-size: 10px; }
+    .ft-neutral { color: var(--gold); font-weight: 500; font-size: 10px; }
+    .ft-dim { opacity: 0.35; }
+
+    /* ── Bitcoin card accent ── */
+    .btc-accent {
+      width: 3px;
+      background: var(--gold);
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+    }
+
+    /* ── Bar chart canvas ── */
+    .bar-chart-wrap { position: relative; height: 180px; margin-top: 16px; }
+
+    /* ── Keyframes ── */
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes numberIn {
+      from { opacity: 0; transform: translateY(24px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .card {
+      animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .metric-strip .metric-tile {
+      animation: cardIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+  </style>
+</head>
+<body>
+
+<!-- ── Nav ─────────────────────────────────────────────── -->
+<nav class="report-nav">
+  <div class="logo">
+    <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" />
+    <span class="logo-text">Tesoro</span>
+  </div>
+  <div class="report-nav-right">Investment Portfolio · April 16, 2026</div>
+</nav>
+
+<div style="max-width:1400px;margin:0 auto">
+
+<!-- ── Row 1: Hero + two KPI cards ──────────────────────── -->
+<div class="report-grid">
+
+  <!-- Hero: Total portfolio value -->
+  <div class="card card--crimson" style="min-height:320px;animation-delay:0.05s">
+    <div class="card-inner-lg" style="justify-content:space-between">
+      <p class="card-label">Total Invested</p>
+      <div>
+        <div class="hero-num">$697,764</div>
+        <p class="stat-sub" style="margin-top:10px;opacity:0.5">6 accounts · stocks &amp; crypto</p>
+      </div>
+      <div>
+        <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.4;margin-bottom:4px">Unrealized Gain</p>
+        <p style="font-family:var(--font-serif);font-size:32px;font-weight:300;letter-spacing:-0.02em;color:var(--cream)">+$279,472</p>
+        <p style="font-size:11px;opacity:0.45;margin-top:2px">+77.4% on cost basis of $361,0</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unrealized gain detail -->
+  <div class="card card--forest" style="animation-delay:0.10s">
+    <div class="card-inner-lg" style="justify-content:space-between">
+      <p class="card-label">Best Performer</p>
+      <div>
+        <p style="font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;opacity:0.45;margin-bottom:6px">SPY — S&amp;P 500 ETF</p>
+        <div class="stat-num">+115.1%</div>
+        <p class="stat-sub">244 shares · Schwab 401(k)</p>
+      </div>
+      <div>
+        <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.4;margin-bottom:6px">Gain on position</p>
+        <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em">+$91,621</p>
+        <p style="font-size:10px;opacity:0.38;margin-top:4px">Cost $79,584 → Value $171,205</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bitcoin / crypto summary -->
+  <div class="card card--gold" style="animation-delay:0.15s">
+    <div class="card-inner-lg" style="justify-content:space-between">
+      <p class="card-label" style="color:#1a1208">Bitcoin Holdings</p>
+      <div>
+        <p style="font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;opacity:0.55;color:#1a1208;margin-bottom:6px">BTC + IBIT combined</p>
+        <div class="stat-num" style="color:#1a1208">$59,861</div>
+        <p style="font-size:11px;opacity:0.45;margin-top:6px;color:#1a1208">8.6% of total portfolio</p>
+      </div>
+      <div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(26,18,8,0.1)">
+            <span style="font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(26,18,8,0.5)">BTC · Robinhood</span>
+            <span style="font-family:var(--font-serif);font-size:16px;font-weight:300;color:#1a1208">$57,298</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0">
+            <span style="font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:rgba(26,18,8,0.5)">IBIT · Schwab</span>
+            <span style="font-family:var(--font-serif);font-size:16px;font-weight:300;color:#1a1208">$2,564</span>
+          </div>
+        </div>
+        <p style="font-size:9px;opacity:0.35;color:#1a1208;margin-top:8px">BTC value as of 2026-03-31</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /row 1 -->
+
+<!-- ── Metric strip ──────────────────────────────────────── -->
+<div class="metric-strip">
+  <div class="metric-tile" style="animation-delay:0.40s">
+    <div class="metric-value text-slate">6</div>
+    <div class="metric-label">Accounts</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.44s">
+    <div class="metric-value" style="color:var(--slate)">+$1,112</div>
+    <div class="metric-label">Day Change</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.48s">
+    <div class="metric-value text-gold">8.6%</div>
+    <div class="metric-label">Crypto Allocation</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.52s">
+    <div class="metric-value" style="color:var(--cream)">91.4%</div>
+    <div class="metric-label">US Equity</div>
+  </div>
+</div>
+
+<!-- ── Row 2: Holdings donut + Positions list + Gain bars ── -->
+<div class="report-grid">
+
+  <!-- Holdings allocation donut -->
+  <div class="card card--navy" style="animation-delay:0.20s">
+    <div class="card-inner">
+      <p class="card-label">Holdings Allocation</p>
+      <div class="donut-wrap" style="margin-top:16px">
+        <canvas id="holdingsDonut"></canvas>
+        <div class="donut-center">
+          <div class="donut-val">$698k</div>
+          <div class="donut-lbl">Total</div>
+        </div>
+      </div>
+      <div class="chart-legend" style="margin-top:24px">
+        <div class="legend-row">
+          <div class="legend-dot" style="background:#5B9EC9"></div>
+          <span class="legend-label">VTI</span>
+          <span class="legend-pct">47.6%</span>
+          <span class="legend-val">$332,118</span>
+        </div>
+        <div class="legend-row">
+          <div class="legend-dot" style="background:#A33030"></div>
+          <span class="legend-label">SPY</span>
+          <span class="legend-pct">24.5%</span>
+          <span class="legend-val">$171,205</span>
+        </div>
+        <div class="legend-row">
+          <div class="legend-dot" style="background:#1D3B6F"></div>
+          <span class="legend-label">SWPPX</span>
+          <span class="legend-pct">19.3%</span>
+          <span class="legend-val">$134,580</span>
+        </div>
+        <div class="legend-row">
+          <div class="legend-dot" style="background:#D4B554"></div>
+          <span class="legend-label">BTC</span>
+          <span class="legend-pct">8.2%</span>
+          <span class="legend-val">$57,298</span>
+        </div>
+        <div class="legend-row">
+          <div class="legend-dot" style="background:#F05A28"></div>
+          <span class="legend-label">IBIT</span>
+          <span class="legend-pct">0.4%</span>
+          <span class="legend-val">$2,564</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Positions list -->
+  <div class="card card--dark" style="animation-delay:0.25s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">All Positions</p>
+      <div style="margin-top:8px">
+
+        <div class="pos-row">
+          <div>
+            <div class="pos-ticker" style="color:var(--slate)">VTI</div>
+            <div class="pos-name">Vanguard Total Market</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.35;letter-spacing:0.04em">960.0 shares</div>
+            <div style="font-size:10px;opacity:0.35">WF + Schwab</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pos-val">$332,118</div>
+            <div class="pos-gain positive">+$143,658</div>
+          </div>
+        </div>
+
+        <div class="pos-row">
+          <div>
+            <div class="pos-ticker" style="color:var(--crimson-lt)">SPY</div>
+            <div class="pos-name">SPDR S&amp;P 500 ETF</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.35;letter-spacing:0.04em">244 shares</div>
+            <div style="font-size:10px;opacity:0.35">Schwab 401(k)</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pos-val">$171,205</div>
+            <div class="pos-gain positive">+$91,621</div>
+          </div>
+        </div>
+
+        <div class="pos-row">
+          <div>
+            <div class="pos-ticker" style="color:#7B9BC8">SWPPX</div>
+            <div class="pos-name">Schwab S&amp;P 500 Index</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.35;letter-spacing:0.04em">7,455.9 shares</div>
+            <div style="font-size:10px;opacity:0.35">3 accounts</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pos-val">$134,580</div>
+            <div class="pos-gain positive">+$44,110</div>
+          </div>
+        </div>
+
+        <div class="pos-row">
+          <div>
+            <div class="pos-ticker" style="color:var(--gold)">BTC</div>
+            <div class="pos-name">Bitcoin</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.35;letter-spacing:0.04em">0.84105 BTC</div>
+            <div style="font-size:10px;opacity:0.35">Robinhood</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pos-val">$57,298</div>
+            <div class="pos-gain neutral">as of 3/31</div>
+          </div>
+        </div>
+
+        <div class="pos-row">
+          <div>
+            <div class="pos-ticker" style="color:var(--orange)">IBIT</div>
+            <div class="pos-name">iShares Bitcoin ETF</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.35;letter-spacing:0.04em">60 shares</div>
+            <div style="font-size:10px;opacity:0.35">Schwab Custodial</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pos-val">$2,564</div>
+            <div class="pos-gain positive">+$83</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Gain by position bars -->
+  <div class="card card--dark" style="animation-delay:0.30s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">Unrealized Gain by Position</p>
+      <div style="margin-top:20px">
+
+        <div class="gain-row">
+          <span class="gain-row-label" style="color:var(--slate)">VTI</span>
+          <div class="gain-bar-track">
+            <div class="gain-bar-fill" style="width:100%;background:var(--slate)"></div>
+          </div>
+          <span class="gain-row-amt">$143,658</span>
+          <span class="gain-row-pct">+76.6%</span>
+        </div>
+
+        <div class="gain-row">
+          <span class="gain-row-label" style="color:var(--crimson-lt)">SPY</span>
+          <div class="gain-bar-track">
+            <div class="gain-bar-fill" style="width:63.8%;background:var(--crimson)"></div>
+          </div>
+          <span class="gain-row-amt">$91,621</span>
+          <span class="gain-row-pct">+115.1%</span>
+        </div>
+
+        <div class="gain-row">
+          <span class="gain-row-label" style="color:#7B9BC8">SWPPX</span>
+          <div class="gain-bar-track">
+            <div class="gain-bar-fill" style="width:30.7%;background:#1D3B6F"></div>
+          </div>
+          <span class="gain-row-amt">$44,110</span>
+          <span class="gain-row-pct">+48.8%</span>
+        </div>
+
+        <div class="gain-row" style="opacity:0.45">
+          <span class="gain-row-label" style="color:var(--orange)">IBIT</span>
+          <div class="gain-bar-track">
+            <div class="gain-bar-fill" style="width:0.06%;background:var(--orange)"></div>
+          </div>
+          <span class="gain-row-amt">$83</span>
+          <span class="gain-row-pct">+3.4%</span>
+        </div>
+
+      </div>
+
+      <div style="margin-top:auto;padding-top:24px;border-top:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38">Total Unrealized</span>
+          <span style="font-family:var(--font-serif);font-size:24px;font-weight:300;color:var(--slate)">+$279,472</span>
+        </div>
+        <p style="font-size:10px;opacity:0.28;margin-top:4px">Excludes BTC cost basis (not reported)</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /row 2 -->
+
+<!-- ── Row 3: Account breakdown donut + Account table ─────── -->
+<div class="report-grid">
+
+  <!-- Account allocation donut -->
+  <div class="card card--navy" style="animation-delay:0.35s">
+    <div class="card-inner">
+      <p class="card-label">By Account</p>
+      <div class="donut-wrap" style="margin-top:16px">
+        <canvas id="accountDonut"></canvas>
+        <div class="donut-center">
+          <div class="donut-val">6</div>
+          <div class="donut-lbl">Accounts</div>
+        </div>
+      </div>
+      <div class="chart-legend" style="margin-top:24px">
+        <div class="legend-row">
+          <div class="legend-dot" style="background:#5B9EC9"></div>
+          <span class="legend-label">Wells Fargo</span>
+          <span class="legend-pct">47.3%</span>
+          <span class="legend-val">$330,382</span>
+        </div>
+        <div class="legend-row">
+          <div class="legend-dot" style="background:#A33030"></div>
+          <span class="legend-label">Schwab 401(k)</span>
+          <span class="legend-pct">24.7%</span>
+          <span class="legend-val">$172,123</span>
+        </div>
+        <div class="legend-row">
+          <div class="legend-dot" style="background:#1D3B6F"></div>
+          <span class="legend-label">Schwab Joint</span>
+          <span class="legend-pct">18.1%</span>
+          <span class="legend-val">$126,540</span>
+        </div>
+        <div class="legend-row">
+          <div class="legend-dot" style="background:#D4B554"></div>
+          <span class="legend-label">Robinhood</span>
+          <span class="legend-pct">8.2%</span>
+          <span class="legend-val">$57,298</span>
+        </div>
+        <div class="legend-row">
+          <div class="legend-dot" style="background:#1F4027"></div>
+          <span class="legend-label">Schwab Custodial</span>
+          <span class="legend-pct">2.9%</span>
+          <span class="legend-val">$20,553</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account table -->
+  <div class="card card--dark span-2" style="animation-delay:0.40s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">Account Detail</p>
+      <table class="acct-table" style="margin-top:12px">
+        <thead>
+          <tr>
+            <th style="width:40%">Account</th>
+            <th>Value</th>
+            <th>Cost Basis</th>
+            <th>Gain / Loss</th>
+            <th>Return</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="td-acct">Wells Fargo <span style="opacity:0.4">...4740 / ...0345 / ...8285</span></div>
+              <div class="td-sub">VTI · 955 shares · Taxable</div>
+            </td>
+            <td><div class="td-val">$330,382</div></td>
+            <td><div class="td-val">$187,507</div></td>
+            <td><div class="td-val">+$142,875</div><div class="td-gain pos">+76.2%</div></td>
+            <td><div class="td-gain pos" style="font-size:13px">+76.2%</div></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-acct">Schwab Individual 401(k) <span style="opacity:0.4">...360</span></div>
+              <div class="td-sub">SPY · 244 shares · Retirement</div>
+            </td>
+            <td><div class="td-val">$172,123</div></td>
+            <td><div class="td-val">$79,584</div></td>
+            <td><div class="td-val">+$91,621</div><div class="td-gain pos">+115.1%</div></td>
+            <td><div class="td-gain pos" style="font-size:13px">+115.1%</div></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-acct">Schwab Joint Tenant <span style="opacity:0.4">...433</span></div>
+              <div class="td-sub">SWPPX · 6,671.6 shares · Joint</div>
+            </td>
+            <td><div class="td-val">$126,540</div></td>
+            <td><div class="td-val">$86,024</div></td>
+            <td><div class="td-val">+$40,432</div><div class="td-gain pos">+47.0%</div></td>
+            <td><div class="td-gain pos" style="font-size:13px">+47.0%</div></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-acct">Robinhood Crypto</div>
+              <div class="td-sub">Bitcoin · 0.84105 BTC · as of 3/31/26</div>
+            </td>
+            <td><div class="td-val">$57,298</div></td>
+            <td><div class="td-val" style="opacity:0.35">—</div></td>
+            <td><div class="td-val" style="opacity:0.35">—</div><div class="td-sub">Cost basis not reported</div></td>
+            <td><div class="td-gain" style="color:var(--gold);font-size:13px">100% BTC</div></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-acct">Schwab Custodial <span style="opacity:0.4">...920</span></div>
+              <div class="td-sub">SWPPX + IBIT · Custodial</div>
+            </td>
+            <td><div class="td-val">$18,433</div></td>
+            <td><div class="td-val">$12,670</div></td>
+            <td><div class="td-val">+$3,692</div><div class="td-gain pos">+29.1%</div></td>
+            <td><div class="td-gain pos" style="font-size:13px">+29.1%</div></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="td-acct">Schwab Custodial <span style="opacity:0.4">...534</span></div>
+              <div class="td-sub">VTI + SWPPX + IBIT · Custodial</div>
+            </td>
+            <td><div class="td-val">$2,120</div></td>
+            <td><div class="td-val">$1,243</div></td>
+            <td><div class="td-val">+$852</div><div class="td-gain pos">+68.6%</div></td>
+            <td><div class="td-gain pos" style="font-size:13px">+68.6%</div></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:baseline">
+        <span style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35">Portfolio Total</span>
+        <div style="text-align:right">
+          <span style="font-family:var(--font-serif);font-size:28px;font-weight:300;letter-spacing:-0.02em">$706,896</span>
+          <span style="font-size:10px;opacity:0.35;margin-left:10px">(incl. cash &amp; money market)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /row 3 -->
+
+<!-- ── Row 4: Full positions table ───────────────────────── -->
+<div class="report-grid">
+
+  <div class="card card--dark span-3" style="animation-delay:0.45s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">All Positions — Detail</p>
+      <table class="full-table" style="margin-top:12px">
+        <thead>
+          <tr>
+            <th style="width:60px">Symbol</th>
+            <th>Description</th>
+            <th>Custodian</th>
+            <th>Shares</th>
+            <th>Price</th>
+            <th>Market Value</th>
+            <th>Cost Basis</th>
+            <th>Gain $</th>
+            <th>Gain %</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="ft-symbol" style="color:var(--slate)">VTI</span></td>
+            <td>
+              <div style="font-size:11px;opacity:0.75">Vanguard Total Stock Market ETF</div>
+              <div class="ft-dim" style="font-size:9px">Taxable · Wells Fargo</div>
+            </td>
+            <td class="ft-dim">WF ...4740</td>
+            <td><span class="ft-num">955.0</span></td>
+            <td><span class="ft-num">$345.95</span></td>
+            <td><span class="ft-num">$330,382</span></td>
+            <td><span class="ft-num">$187,507</span></td>
+            <td><span class="ft-num ft-pos-gain">+$142,875</span></td>
+            <td><span class="ft-pos-gain">+76.2%</span></td>
+          </tr>
+          <tr>
+            <td><span class="ft-symbol" style="color:var(--crimson-lt)">SPY</span></td>
+            <td>
+              <div style="font-size:11px;opacity:0.75">State Street SPDR S&amp;P 500 ETF Trust</div>
+              <div class="ft-dim" style="font-size:9px">Individual 401(k) · Schwab</div>
+            </td>
+            <td class="ft-dim">SWB ...360</td>
+            <td><span class="ft-num">244.0</span></td>
+            <td><span class="ft-num">$701.66</span></td>
+            <td><span class="ft-num">$171,205</span></td>
+            <td><span class="ft-num">$79,584</span></td>
+            <td><span class="ft-num ft-pos-gain">+$91,621</span></td>
+            <td><span class="ft-pos-gain">+115.1%</span></td>
+          </tr>
+          <tr>
+            <td><span class="ft-symbol" style="color:#7B9BC8">SWPPX</span></td>
+            <td>
+              <div style="font-size:11px;opacity:0.75">Schwab S&amp;P 500 Index Fund</div>
+              <div class="ft-dim" style="font-size:9px">Joint Tenant · Schwab</div>
+            </td>
+            <td class="ft-dim">SWB ...433</td>
+            <td><span class="ft-num">6,671.6</span></td>
+            <td><span class="ft-num">$18.05</span></td>
+            <td><span class="ft-num">$120,423</span></td>
+            <td><span class="ft-num">$79,991</span></td>
+            <td><span class="ft-num ft-pos-gain">+$40,432</span></td>
+            <td><span class="ft-pos-gain">+50.6%</span></td>
+          </tr>
+          <tr>
+            <td><span class="ft-symbol" style="color:var(--gold)">BTC</span></td>
+            <td>
+              <div style="font-size:11px;opacity:0.75">Bitcoin</div>
+              <div class="ft-dim" style="font-size:9px">Crypto · Robinhood</div>
+            </td>
+            <td class="ft-dim">RH ...117404</td>
+            <td><span class="ft-num">0.84105</span></td>
+            <td><span class="ft-num ft-dim">—</span></td>
+            <td><span class="ft-num">$57,298</span></td>
+            <td><span class="ft-num ft-dim">—</span></td>
+            <td><span class="ft-num ft-neutral">—</span></td>
+            <td><span class="ft-neutral">3/31/26</span></td>
+          </tr>
+          <tr>
+            <td><span class="ft-symbol" style="color:#7B9BC8">SWPPX</span></td>
+            <td>
+              <div style="font-size:11px;opacity:0.75">Schwab S&amp;P 500 Index Fund</div>
+              <div class="ft-dim" style="font-size:9px">Custodial · Schwab</div>
+            </td>
+            <td class="ft-dim">SWB ...920</td>
+            <td><span class="ft-num">776.3</span></td>
+            <td><span class="ft-num">$18.05</span></td>
+            <td><span class="ft-num">$14,012</span></td>
+            <td><span class="ft-num">$10,384</span></td>
+            <td><span class="ft-num ft-pos-gain">+$3,627</span></td>
+            <td><span class="ft-pos-gain">+34.9%</span></td>
+          </tr>
+          <tr>
+            <td><span class="ft-symbol" style="color:var(--slate)">VTI</span></td>
+            <td>
+              <div style="font-size:11px;opacity:0.75">Vanguard Total Stock Market ETF</div>
+              <div class="ft-dim" style="font-size:9px">Custodial · Schwab</div>
+            </td>
+            <td class="ft-dim">SWB ...534</td>
+            <td><span class="ft-num">5.0</span></td>
+            <td><span class="ft-num">$346.03</span></td>
+            <td><span class="ft-num">$1,736</span></td>
+            <td><span class="ft-num">$953</span></td>
+            <td><span class="ft-num ft-pos-gain">+$783</span></td>
+            <td><span class="ft-pos-gain">+82.1%</span></td>
+          </tr>
+          <tr>
+            <td><span class="ft-symbol" style="color:var(--orange)">IBIT</span></td>
+            <td>
+              <div style="font-size:11px;opacity:0.75">iShares Bitcoin Trust ETF</div>
+              <div class="ft-dim" style="font-size:9px">Custodial · Schwab</div>
+            </td>
+            <td class="ft-dim">SWB ...920</td>
+            <td><span class="ft-num">55.0</span></td>
+            <td><span class="ft-num">$42.73</span></td>
+            <td><span class="ft-num">$2,350</span></td>
+            <td><span class="ft-num">$2,285</span></td>
+            <td><span class="ft-num ft-pos-gain">+$65</span></td>
+            <td><span class="ft-pos-gain">+2.9%</span></td>
+          </tr>
+          <tr>
+            <td><span class="ft-symbol" style="color:#7B9BC8">SWPPX</span></td>
+            <td>
+              <div style="font-size:11px;opacity:0.75">Schwab S&amp;P 500 Index Fund</div>
+              <div class="ft-dim" style="font-size:9px">Custodial · Schwab</div>
+            </td>
+            <td class="ft-dim">SWB ...534</td>
+            <td><span class="ft-num">8.1</span></td>
+            <td><span class="ft-num">$18.05</span></td>
+            <td><span class="ft-num">$146</span></td>
+            <td><span class="ft-num">$94</span></td>
+            <td><span class="ft-num ft-pos-gain">+$52</span></td>
+            <td><span class="ft-pos-gain">+54.8%</span></td>
+          </tr>
+          <tr>
+            <td><span class="ft-symbol" style="color:var(--orange)">IBIT</span></td>
+            <td>
+              <div style="font-size:11px;opacity:0.75">iShares Bitcoin Trust ETF</div>
+              <div class="ft-dim" style="font-size:9px">Custodial · Schwab</div>
+            </td>
+            <td class="ft-dim">SWB ...534</td>
+            <td><span class="ft-num">5.0</span></td>
+            <td><span class="ft-num">$42.73</span></td>
+            <td><span class="ft-num">$214</span></td>
+            <td><span class="ft-num">$196</span></td>
+            <td><span class="ft-num ft-pos-gain">+$18</span></td>
+            <td><span class="ft-pos-gain">+9.1%</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:baseline">
+        <span style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.28">Data as of April 16, 2026 · BTC as of March 31, 2026</span>
+        <div>
+          <span style="font-family:var(--font-serif);font-size:22px;font-weight:300;letter-spacing:-0.02em">$697,764 </span>
+          <span style="font-size:10px;opacity:0.35">invested · </span>
+          <span style="font-family:var(--font-serif);font-size:18px;font-weight:300;color:var(--slate)">+$279,472 </span>
+          <span style="font-size:10px;color:var(--slate);opacity:0.7">unrealized gain</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /row 4 -->
+
+<!-- ── Row 5: S&P 500 vs Bitcoin exposure ───────────────── -->
+<div class="report-grid">
+
+  <!-- S&P 500 exposure detail -->
+  <div class="card card--indigo span-2" style="animation-delay:0.50s">
+    <div class="card-inner">
+      <p class="card-label">S&amp;P 500 Exposure</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;margin-top:12px">
+        <div style="padding-right:24px;border-right:1px solid rgba(245,237,217,0.08)">
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.4;margin-bottom:8px">Via SPY (Schwab 401k)</p>
+          <p style="font-family:var(--font-serif);font-size:36px;font-weight:300;letter-spacing:-0.03em">$171,205</p>
+          <p style="font-size:10px;opacity:0.38;margin-top:4px">244 sh · $701.66 · +115.1% return</p>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(245,237,217,0.06)">
+              <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">Cost Basis</span>
+              <span style="font-family:var(--font-serif);font-size:15px;font-weight:300">$79,584</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(245,237,217,0.06)">
+              <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">Unrealized Gain</span>
+              <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:var(--slate)">+$91,621</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0">
+              <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">Day Change</span>
+              <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:var(--slate)">+$419.68</span>
+            </div>
+          </div>
+        </div>
+        <div style="padding-left:24px">
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.4;margin-bottom:8px">Via SWPPX (3 accounts)</p>
+          <p style="font-family:var(--font-serif);font-size:36px;font-weight:300;letter-spacing:-0.03em">$134,580</p>
+          <p style="font-size:10px;opacity:0.38;margin-top:4px">7,455.9 sh · $18.05 · +48.8% return</p>
+          <div style="margin-top:16px;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(245,237,217,0.06)">
+              <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">Joint ...433</span>
+              <span style="font-family:var(--font-serif);font-size:15px;font-weight:300">$120,423</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(245,237,217,0.06)">
+              <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">Custodial ...920</span>
+              <span style="font-family:var(--font-serif);font-size:15px;font-weight:300">$14,012</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:6px 0">
+              <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">Custodial ...534</span>
+              <span style="font-family:var(--font-serif);font-size:15px;font-weight:300">$146</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(245,237,217,0.08);display:flex;justify-content:space-between;align-items:baseline">
+        <span style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.35">Combined S&amp;P 500 Exposure</span>
+        <span style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em">$305,785 <span style="font-size:12px;opacity:0.45">43.8% of portfolio</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bitcoin detail card -->
+  <div class="card card--dark" style="animation-delay:0.55s;border:1px solid var(--border);position:relative">
+    <div class="btc-accent"></div>
+    <div class="card-inner">
+      <p class="card-label">Bitcoin Detail</p>
+
+      <div style="margin-top:8px">
+        <p style="font-size:9px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;opacity:0.4;margin-bottom:6px">Robinhood · Direct BTC</p>
+        <p style="font-family:var(--font-serif);font-size:40px;font-weight:300;letter-spacing:-0.03em;color:var(--gold)">$57,298</p>
+        <p style="font-size:10px;opacity:0.35;margin-top:4px">0.84104507 BTC · as of 2026-03-31</p>
+      </div>
+
+      <div style="margin-top:20px;display:flex;flex-direction:column;gap:0">
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">Opening (3/1/26)</span>
+          <span style="font-family:var(--font-serif);font-size:15px;font-weight:300">$56,383</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">Closing (3/31/26)</span>
+          <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:var(--gold)">$57,298</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">Month Change</span>
+          <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:var(--slate)">+$914</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">IBIT · Schwab (60 sh)</span>
+          <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:var(--orange)">$2,564</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;padding:9px 0">
+          <span style="font-size:9px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;opacity:0.35">Total BTC Exposure</span>
+          <span style="font-family:var(--font-serif);font-size:18px;font-weight:300;color:var(--gold)">$59,862</span>
+        </div>
+      </div>
+
+      <div style="margin-top:auto;padding-top:16px;border-top:1px solid var(--border)">
+        <p style="font-size:9px;opacity:0.28;line-height:1.6">Bitcoin represents 8.6% of total portfolio. Held directly via Robinhood (0.841 BTC) and indirectly via IBIT ETF (60 shares, 2 custodial accounts).</p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /row 5 -->
+
+<!-- ── Footer stamp ────────────────────────────────────────── -->
+<div style="max-width:1400px;margin:0 auto;padding:32px 28px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:baseline">
+  <div class="logo" style="animation:none">
+    <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" />
+    <span class="logo-text">Tesoro</span>
+  </div>
+  <p style="font-size:10px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;opacity:0.22">Investment Portfolio · April 16, 2026</p>
+</div>
+
+</div><!-- /max-width wrapper -->
+
+<script>
+  Chart.defaults.font.family = '"Space Grotesk", sans-serif';
+  Chart.defaults.color = 'rgba(245,237,217,0.38)';
+
+  const easing = 'easeOutQuart';
+  const animDur = 900;
+
+  // ── Holdings donut ─────────────────────────────────────────
+  new Chart(document.getElementById('holdingsDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['VTI', 'SPY', 'SWPPX', 'BTC', 'IBIT'],
+      datasets: [{
+        data: [332118, 171205, 134580, 57298, 2564],
+        backgroundColor: [
+          '#5B9EC9',
+          '#A33030',
+          '#1D3B6F',
+          '#D4B554',
+          '#F05A28',
+        ],
+        borderWidth: 0,
+        hoverOffset: 4,
+      }]
+    },
+    options: {
+      cutout: '67%',
+      animation: { duration: animDur, easing },
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: {
+          label: ctx => {
+            const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+            const pct = ((ctx.parsed / total) * 100).toFixed(1);
+            return ` $${ctx.parsed.toLocaleString()} (${pct}%)`;
+          }
+        },
+        backgroundColor: '#181818',
+        borderColor: 'rgba(245,237,217,0.1)',
+        borderWidth: 1,
+        titleFont: { family: '"Space Grotesk"', size: 10, weight: '600' },
+        bodyFont: { family: '"ivyjournal", Georgia, serif', size: 14, weight: '300' },
+        padding: 12,
+      }},
+    }
+  });
+
+  // ── Account donut ──────────────────────────────────────────
+  new Chart(document.getElementById('accountDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Wells Fargo', 'Schwab 401k', 'Schwab Joint', 'Robinhood', 'Schwab Custodial'],
+      datasets: [{
+        data: [330382, 172123, 126540, 57298, 20553],
+        backgroundColor: [
+          '#5B9EC9',
+          '#A33030',
+          '#1D3B6F',
+          '#D4B554',
+          '#1F4027',
+        ],
+        borderWidth: 0,
+        hoverOffset: 4,
+      }]
+    },
+    options: {
+      cutout: '67%',
+      animation: { duration: animDur, easing },
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: {
+          label: ctx => {
+            const total = ctx.dataset.data.reduce((a,b) => a+b, 0);
+            const pct = ((ctx.parsed / total) * 100).toFixed(1);
+            return ` $${ctx.parsed.toLocaleString()} (${pct}%)`;
+          }
+        },
+        backgroundColor: '#181818',
+        borderColor: 'rgba(245,237,217,0.1)',
+        borderWidth: 1,
+        titleFont: { family: '"Space Grotesk"', size: 10, weight: '600' },
+        bodyFont: { family: '"ivyjournal", Georgia, serif', size: 14, weight: '300' },
+        padding: 12,
+      }},
+    }
+  });
+</script>
+
+</body>
+</html>

@@ -7,3 +7,5 @@ __pycache__/
 assets/data/raw/
 assets/data/processed/
 .csv
+.vercel
+.env*.local

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro — March Spending</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+
+    /* ── Nav ── */
+    .report-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      animation: fadeIn 0.4s ease both;
+    }
+    .report-nav-right {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.28;
+    }
+
+    /* ── Grid ── */
+    .report-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* ── Hero ── */
+    .hero-card { min-height: 360px; }
+    .hero-total {
+      font-family: var(--font-serif);
+      font-size: 76px;
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      margin-bottom: 10px;
+      animation: numberIn 0.7s 0.4s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .hero-sub {
+      font-size: 11px;
+      opacity: 0.45;
+      letter-spacing: 0.06em;
+      margin-bottom: 32px;
+      animation: fadeIn 0.5s 0.55s ease both;
+    }
+
+    /* ── Stat shared ── */
+    .stat-num {
+      font-family: var(--font-serif);
+      font-size: 52px;
+      font-weight: 300;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .stat-sub {
+      font-size: 11px;
+      opacity: 0.4;
+      letter-spacing: 0.04em;
+      margin-bottom: 18px;
+    }
+
+    /* ── Donut ── */
+    .donut-wrap {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin: 0 auto;
+    }
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    .donut-pct {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .donut-pct-label {
+      font-size: 8px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-top: 3px;
+    }
+
+    /* ── Merchant rows ── */
+    .merchant-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .merchant-row:last-child { border-bottom: none; }
+    .merchant-rank {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      opacity: 0.22;
+      width: 14px;
+      flex-shrink: 0;
+    }
+    .merchant-name {
+      font-size: 12px;
+      font-weight: 500;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .merchant-cat {
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      opacity: 0.35;
+      flex-shrink: 0;
+    }
+    .merchant-amt {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      flex-shrink: 0;
+      width: 68px;
+      text-align: right;
+    }
+
+    /* ── AI callout card ── */
+    .ai-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(245,237,217,0.05);
+    }
+    .ai-row:last-child { border-bottom: none; }
+    .ai-name { font-size: 12px; font-weight: 500; }
+    .ai-amt {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      color: var(--purple, #C88FE0);
+    }
+
+    /* ── Horizontal category bars ── */
+    .cat-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 11px;
+    }
+    .cat-bar-label {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      opacity: 0.45;
+      width: 92px;
+      flex-shrink: 0;
+    }
+    .cat-bar-track {
+      flex: 1;
+      height: 4px;
+      background: rgba(245,237,217,0.07);
+    }
+    .cat-bar-fill { height: 100%; }
+    .cat-bar-amt {
+      font-family: var(--font-serif);
+      font-size: 14px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      width: 60px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* ── Daily chart ── */
+    .daily-wrap { height: 110px; position: relative; }
+
+    /* ── Metric strip ── */
+    .metric-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--border);
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .metric-tile {
+      padding: 22px 24px;
+      border-right: 1px solid var(--border);
+      animation: cardIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .metric-tile:last-child { border-right: none; }
+    .metric-tile .metric-value {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 300;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .metric-tile .metric-label {
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.32;
+      margin-top: 5px;
+    }
+
+    @media (max-width: 1080px) {
+      .report-grid { grid-template-columns: 1fr 1fr; }
+      .metric-strip { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .report-grid { grid-template-columns: 1fr; }
+      .metric-strip { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="report-nav">
+  <div class="logo">
+    <img src="../assets/design/png/tesoro_logo_icon_01.png" alt="" class="logo-icon" />
+    <span class="logo-text">Tesoro</span>
+  </div>
+  <div class="report-nav-right">Citi Card-1188 &nbsp;·&nbsp; March 2026</div>
+</nav>
+
+<div class="report-grid">
+
+  <!-- ── CARD 1: Hero ───────────────────────────────── -->
+  <div class="card card--crimson hero-card" style="animation-delay:0.05s">
+    <div class="card-inner">
+      <p class="card-label">Total Spend · March 2026</p>
+      <p class="hero-total">$8,503</p>
+      <p class="hero-sub">103 transactions · Citi Card-1188</p>
+
+      <p class="card-label" style="margin-bottom:10px">Month at a Glance</p>
+      <div style="display:flex;gap:28px;flex-wrap:wrap">
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1">10</p>
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38;margin-top:4px">Categories</p>
+        </div>
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1">$275</p>
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38;margin-top:4px">Avg per Day</p>
+        </div>
+        <div>
+          <p style="font-family:var(--font-serif);font-size:26px;font-weight:300;letter-spacing:-0.02em;line-height:1;color:var(--orange)">$1,579</p>
+          <p style="font-size:9px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;opacity:0.38;margin-top:4px">Biggest Day</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 2: Restaurants (gold) ────────────────── -->
+  <div class="card card--gold" style="animation-delay:0.1s;min-height:360px">
+    <div class="card-inner" style="display:flex;flex-direction:column;justify-content:space-between;height:100%">
+      <div>
+        <p class="card-label" style="color:#1a1208">Most Frequent Category</p>
+        <p style="font-family:var(--font-serif);font-size:52px;font-weight:300;line-height:0.95;letter-spacing:-0.03em;color:#1a1208;margin-bottom:2px">$1,504</p>
+        <p style="font-size:12px;font-weight:600;letter-spacing:0.04em;opacity:0.6;color:#1a1208;margin-bottom:16px">Restaurants &nbsp;·&nbsp; 31 transactions</p>
+      </div>
+      <div>
+        <p style="font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;opacity:0.4;color:#1a1208;margin-bottom:8px">Frequent Spots</p>
+        <div style="border-top:1px solid rgba(26,18,8,0.12)">
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(26,18,8,0.08)">
+            <span style="font-size:12px;font-weight:500;color:#1a1208">Neptune's Grill</span>
+            <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:#1a1208">$340 · 4×</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(26,18,8,0.08)">
+            <span style="font-size:12px;font-weight:500;color:#1a1208">Mademoiselle Paris</span>
+            <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:#1a1208">$147 · 3×</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(26,18,8,0.08)">
+            <span style="font-size:12px;font-weight:500;color:#1a1208">The Sourdough Co.</span>
+            <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:#1a1208">$62 · 1×</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:8px 0">
+            <span style="font-size:12px;font-weight:500;color:#1a1208">Juno & The Peacock</span>
+            <span style="font-family:var(--font-serif);font-size:15px;font-weight:300;color:#1a1208">$207 · 1×</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 3: Category Donut (navy) ─────────────── -->
+  <div class="card card--navy" style="animation-delay:0.15s;min-height:360px">
+    <div class="card-inner" style="display:flex;flex-direction:column;align-items:center">
+      <p class="card-label" style="align-self:flex-start">Spend by Category</p>
+      <p class="stat-num" style="align-self:flex-start">10 cats</p>
+      <p class="stat-sub" style="align-self:flex-start">March 2026 · all types</p>
+      <div class="donut-wrap">
+        <canvas id="catDonut"></canvas>
+        <div class="donut-center">
+          <span class="donut-pct">$8.5k</span>
+          <span class="donut-pct-label">Total</span>
+        </div>
+      </div>
+      <div id="donutLegend" style="margin-top:16px;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:5px 14px"></div>
+    </div>
+  </div>
+
+  <!-- ── CARD 4: Top Merchants (dark) ──────────────── -->
+  <div class="card card--dark" style="animation-delay:0.2s;border:1px solid var(--border);min-height:280px">
+    <div class="card-inner">
+      <p class="card-label">Top Charges</p>
+      <p class="stat-sub" style="margin-bottom:14px">Single largest transactions</p>
+
+      <div class="merchant-row">
+        <span class="merchant-rank">01</span>
+        <span class="merchant-name">Tooth Doctor</span>
+        <span class="merchant-cat">Health</span>
+        <span class="merchant-amt text-orange">$1,294</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">02</span>
+        <span class="merchant-name">Lake Nona Wave Hotel</span>
+        <span class="merchant-cat">Lodging</span>
+        <span class="merchant-amt">$953</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">03</span>
+        <span class="merchant-name">United Air Conditioning</span>
+        <span class="merchant-cat">Services</span>
+        <span class="merchant-amt">$806</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">04</span>
+        <span class="merchant-name">United Airlines</span>
+        <span class="merchant-cat">Air Travel</span>
+        <span class="merchant-amt">$490</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">05</span>
+        <span class="merchant-name">Target</span>
+        <span class="merchant-cat">Merch</span>
+        <span class="merchant-amt">$399</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">06</span>
+        <span class="merchant-name">Neptune's Grill</span>
+        <span class="merchant-cat">Rest.</span>
+        <span class="merchant-amt">$340</span>
+      </div>
+      <div class="merchant-row">
+        <span class="merchant-rank">07</span>
+        <span class="merchant-name">INK 48 Hotel NYC</span>
+        <span class="merchant-cat">Lodging</span>
+        <span class="merchant-amt">$285</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 5: AI Subscriptions (indigo) ─────────── -->
+  <div class="card card--indigo" style="animation-delay:0.25s">
+    <div class="card-inner">
+      <p class="card-label">AI Subscriptions</p>
+      <p class="stat-num" style="color:var(--purple, #C88FE0)">$300</p>
+      <p class="stat-sub">5 services · March 2026</p>
+
+      <div class="ai-row">
+        <span class="ai-name">Claude.ai Pro</span>
+        <span class="ai-amt">$200</span>
+      </div>
+      <div class="ai-row">
+        <span class="ai-name">Anthropic API</span>
+        <span class="ai-amt">$60</span>
+      </div>
+      <div class="ai-row">
+        <span class="ai-name">OpenAI ChatGPT</span>
+        <span class="ai-amt">$20</span>
+      </div>
+      <div class="ai-row">
+        <span class="ai-name">Runway ML</span>
+        <span class="ai-amt">$15</span>
+      </div>
+      <div class="ai-row">
+        <span class="ai-name">ElevenLabs</span>
+        <span class="ai-amt">$5</span>
+      </div>
+
+      <p style="font-size:10px;opacity:0.28;margin-top:16px;line-height:1.6;letter-spacing:0.02em">
+        3.5% of total monthly spend on AI tooling.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── CARD 6: Category Bars + Daily Chart (dark, wide) ── -->
+  <div class="card card--dark" style="animation-delay:0.3s;border:1px solid var(--border)">
+    <div class="card-inner">
+      <p class="card-label">Category Breakdown</p>
+      <p class="stat-sub" style="margin-bottom:18px">Sorted by spend</p>
+
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Merchandise</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:100%;background:var(--slate)"></div></div>
+        <span class="cat-bar-amt">$1,847</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Restaurants</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:81.5%;background:var(--gold)"></div></div>
+        <span class="cat-bar-amt">$1,504</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Health Care</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:80.3%;background:var(--orange)"></div></div>
+        <span class="cat-bar-amt">$1,484</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Lodging</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:69.7%;background:var(--crimson)"></div></div>
+        <span class="cat-bar-amt">$1,287</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Services</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:68.2%;background:var(--cream-dim, rgba(245,237,217,0.55))"></div></div>
+        <span class="cat-bar-amt">$1,260</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Air Travel</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:31.2%;background:var(--slate)"></div></div>
+        <span class="cat-bar-amt">$576</span>
+      </div>
+      <div class="cat-bar-row">
+        <span class="cat-bar-label">Vehicle</span>
+        <div class="cat-bar-track"><div class="cat-bar-fill" style="width:19.1%;background:rgba(245,237,217,0.3)"></div></div>
+        <span class="cat-bar-amt">$353</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CARD 7: Daily Spend Bar (dark, full width) ── -->
+  <div class="card card--dark" style="animation-delay:0.35s;border:1px solid var(--border);grid-column:span 3">
+    <div class="card-inner">
+      <p class="card-label">Daily Spend — March 2026</p>
+      <p class="stat-sub" style="margin-bottom:16px">Mar 27 peak: $1,579 (Tooth Doctor + NYC hotel)</p>
+      <div class="daily-wrap" style="height:130px">
+        <canvas id="dailyChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Metric strip -->
+<div class="metric-strip">
+  <div class="metric-tile" style="animation-delay:0.4s">
+    <div class="metric-value text-orange">$1,294</div>
+    <div class="metric-label">Biggest Single Charge</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.45s">
+    <div class="metric-value" style="color:var(--purple,#C88FE0)">$300</div>
+    <div class="metric-label">AI Tools</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.5s">
+    <div class="metric-value">4×</div>
+    <div class="metric-label">Neptune's Grill Visits</div>
+  </div>
+  <div class="metric-tile" style="animation-delay:0.55s">
+    <div class="metric-value text-gold">103</div>
+    <div class="metric-label">Total Transactions</div>
+  </div>
+</div>
+
+<script>
+  Chart.defaults.font.family = '"Space Grotesk", sans-serif';
+  Chart.defaults.color = 'rgba(245,237,217,0.38)';
+
+  // ── Category donut ────────────────────────────────
+  const catLabels  = ['Merchandise','Restaurants','Health','Lodging','Services','Air Travel','Vehicle','Other'];
+  const catValues  = [1846.97, 1504.45, 1483.62, 1287.13, 1260.11, 576.44, 353.49, 191.26];
+  const catColors  = ['#5B9EC9','#D4B554','#F05A28','#A33030','rgba(245,237,217,0.45)','#5B9EC9','rgba(245,237,217,0.2)','#1D3B6F'];
+
+  new Chart(document.getElementById('catDonut'), {
+    type: 'doughnut',
+    data: {
+      labels: catLabels,
+      datasets: [{
+        data: catValues,
+        backgroundColor: ['#5B9EC9','#D4B554','#F05A28','#A33030','rgba(245,237,217,0.5)','#06042A','rgba(245,237,217,0.2)','#1D3B6F'],
+        borderWidth: 0,
+        hoverOffset: 4,
+      }]
+    },
+    options: {
+      cutout: '66%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => ` $${ctx.parsed.toLocaleString('en-US',{maximumFractionDigits:0})}`
+          }
+        }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+
+  // Inline legend
+  const legend = document.getElementById('donutLegend');
+  catLabels.forEach((l, i) => {
+    const el = document.createElement('div');
+    el.style.cssText = 'display:flex;align-items:center;gap:5px';
+    el.innerHTML = `
+      <span style="width:7px;height:7px;border-radius:50%;background:${catColors[i]};flex-shrink:0"></span>
+      <span style="font-size:9px;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;opacity:0.55">${l}</span>
+    `;
+    legend.appendChild(el);
+  });
+
+  // ── Daily bar chart ───────────────────────────────
+  const days = Array.from({length:31}, (_,i) => i+1);
+  const dailyData = {
+    1: 1138.70, 2: 318.12, 3: 80.99, 4: 425.13, 5: 29.45,
+    6: 41.50, 7: 216.59, 8: 138.12, 9: 118.37, 10: 0,
+    11: 240.21, 12: 0, 13: 20.41, 14: 660.67, 15: 319.74,
+    16: 819.42, 17: 69.76, 18: 199.26, 19: 129.64, 20: 64.52,
+    21: 162.21, 22: 119.67, 23: 51.04, 24: 186.21, 25: 0,
+    26: 165.08, 27: 1579.23, 28: 588.43, 29: 217.96, 30: 308.67, 31: 94.37
+  };
+
+  const vals = days.map(d => dailyData[d] || 0);
+  const bgColors = vals.map(v => v === 1579.23 ? '#F05A28' : 'rgba(163,48,48,0.65)');
+
+  new Chart(document.getElementById('dailyChart'), {
+    type: 'bar',
+    data: {
+      labels: days.map(d => d % 5 === 0 || d === 1 || d === 31 ? `Mar ${d}` : ''),
+      datasets: [{
+        data: vals,
+        backgroundColor: bgColors,
+        borderWidth: 0,
+        borderRadius: 1,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => `Mar ${ctx[0].dataIndex + 1}`,
+            label: ctx => ` $${ctx.parsed.y.toLocaleString('en-US',{maximumFractionDigits:0})}`
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { size: 9 }, maxRotation: 0 },
+          border: { color: 'rgba(245,237,217,0.06)' }
+        },
+        y: {
+          grid: { color: 'rgba(245,237,217,0.04)' },
+          ticks: {
+            font: { size: 9 },
+            callback: v => v === 0 ? '' : '$' + (v >= 1000 ? (v/1000).toFixed(1)+'k' : v)
+          },
+          border: { display: false }
+        }
+      },
+      animation: { duration: 900, easing: 'easeOutQuart' }
+    }
+  });
+</script>
+
+</body>
+</html>

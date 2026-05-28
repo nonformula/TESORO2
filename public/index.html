@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tesoro</title>
+  <link rel="stylesheet" href="https://use.typekit.net/jal8uea.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/app.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PASSWORD SCREEN
+  ═══════════════════════════════════════════════════════ -->
+  <div id="screen-password" class="screen screen--auth">
+    <div class="auth-panel">
+      <div class="auth-logo">
+        <img src="/assets/design/png/tesoro_logo_icon_01.png" class="auth-logo-icon" alt="Tesoro" />
+        <span class="auth-logo-text">Tesoro</span>
+      </div>
+      <p class="auth-tagline">Private financial intelligence</p>
+      <form id="form-password" class="auth-form" autocomplete="off">
+        <div class="auth-field-wrap">
+          <input
+            id="input-password"
+            type="password"
+            class="auth-input"
+            placeholder="Password"
+            autocomplete="current-password"
+          />
+        </div>
+        <button type="submit" class="auth-btn">Enter</button>
+        <p id="password-error" class="auth-error hidden">Incorrect password.</p>
+      </form>
+    </div>
+    <div class="auth-bg"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       API KEY MODAL
+  ═══════════════════════════════════════════════════════ -->
+  <div id="modal-apikey" class="modal-overlay hidden">
+    <div class="modal">
+      <p class="modal-label">ANTHROPIC API KEY</p>
+      <h2 class="modal-title">Connect to Mastro</h2>
+      <p class="modal-body">
+        Your API key is used to generate insights directly from your browser.
+        It is stored only in this session and never sent to any server.
+      </p>
+      <form id="form-apikey" autocomplete="off">
+        <div class="auth-field-wrap" style="margin-bottom:12px">
+          <input
+            id="input-apikey"
+            type="password"
+            class="auth-input"
+            placeholder="sk-ant-..."
+            autocomplete="off"
+          />
+        </div>
+        <button type="submit" class="auth-btn">Connect</button>
+        <p id="apikey-error" class="auth-error hidden">Invalid key format.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       APP SHELL (hidden until authenticated)
+  ═══════════════════════════════════════════════════════ -->
+  <div id="app" class="app hidden">
+
+    <!-- Sidebar nav -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="/assets/design/png/tesoro_logo_icon_01.png" class="logo-icon" alt="Tesoro" />
+        <span class="logo-text">Tesoro</span>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item nav-item--active" data-view="brief">
+          <span class="nav-icon">◆</span>
+          <span class="nav-label">Financial Brief</span>
+        </button>
+        <button class="nav-item" data-view="networth">
+          <span class="nav-icon">◆</span>
+          <span class="nav-label">Net Worth</span>
+        </button>
+        <button class="nav-item" data-view="investments">
+          <span class="nav-icon">◆</span>
+          <span class="nav-label">Investments</span>
+        </button>
+        <button class="nav-item" data-view="spending">
+          <span class="nav-icon">◆</span>
+          <span class="nav-label">Spending</span>
+        </button>
+        <button class="nav-item" data-view="budget">
+          <span class="nav-icon">◆</span>
+          <span class="nav-label">Budget</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="btn-upload-new" class="sidebar-action">
+          <span class="sidebar-action-icon">↑</span>
+          Upload Data
+        </button>
+        <button id="btn-clear-key" class="sidebar-action sidebar-action--dim">
+          <span class="sidebar-action-icon">×</span>
+          Clear Session
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+      <!-- Upload zone (shown when no data loaded) -->
+      <div id="upload-zone" class="upload-zone">
+        <div class="upload-zone-inner">
+          <div class="upload-icon">↑</div>
+          <h2 class="upload-title">Drop your financial files here</h2>
+          <p class="upload-subtitle">CSV · XLSX · PDF — bank, credit card, brokerage, retirement accounts</p>
+          <input id="file-input" type="file" multiple accept=".csv,.xlsx,.xls,.pdf" class="hidden" />
+          <button id="btn-browse" class="upload-browse-btn">Browse files</button>
+          <div id="upload-file-list" class="upload-file-list hidden"></div>
+          <button id="btn-analyze" class="upload-analyze-btn hidden">Generate Analysis</button>
+          <p class="upload-privacy">Files are parsed locally in your browser. Nothing is uploaded to a server.</p>
+        </div>
+      </div>
+
+      <!-- View container (shown when data is loaded) -->
+      <div id="view-container" class="view-container hidden">
+
+        <!-- Timeframe bar (shown for Spending + Budget views) -->
+        <div id="timeframe-bar" class="timeframe-bar hidden">
+          <button class="tf-btn" data-tf="1w">1W</button>
+          <button class="tf-btn" data-tf="1mo">1MO</button>
+          <button class="tf-btn tf-btn--active" data-tf="3mo">3MO</button>
+          <button class="tf-btn" data-tf="ytd">YTD</button>
+        </div>
+
+        <!-- Actual view output rendered here by views.js -->
+        <div id="view-output"></div>
+
+      </div>
+
+      <!-- Loading state -->
+      <div id="loading-state" class="loading-state hidden">
+        <div class="loading-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <p id="loading-msg" class="loading-msg">Analyzing your data…</p>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SCRIPTS — order matters
+  ═══════════════════════════════════════════════════════ -->
+
+  <!-- CDN libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- App modules -->
+  <script src="js/parser.js"></script>
+  <script src="js/llm.js"></script>
+  <script src="js/views.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
