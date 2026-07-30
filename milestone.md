@@ -293,6 +293,34 @@ Real data files from `assets/data/raw/041626/` revealed three parser bugs:
 
 ---
 
+## Report — Citi YTD Jan–Jul 2026 (`public/spending-ytd-july.html`)
+
+Standalone static report built from `assets/data/raw/072926/CITI_Year to date-3.CSV`
+(581 transactions, $39,957.66, Jan 1 – Jul 27 2026, zero credits).
+
+**Category reclassification.** Citi files 175 of the 581 charges as a single
+`Merchandise` line worth $9,838. The report splits it into Groceries (Walmart per
+user instruction, plus Publix / Sprouts / Earth Origins / Mazzaros), AI & Software,
+Retail, and Home & Garden. Fuel is pulled out of `Vehicle Services`; utilities out
+of `Services`; SunPass/parking into its own bucket. 16 resulting categories.
+
+**Layout rules applied (from `agent/REPORT_PROTOCOL.md`)**
+- `.chart-wrap` uses `flex: 0 0 auto` — with `flex: 1` the charts stretched to fill
+  cards that a taller neighbour had grown (the AI line chart rendered ~600px tall).
+- At ≤1080px every `.report-grid > .card` spans full width. The report alternates
+  span-2 and single-column cards, so nothing tiles into a 2-up grid without leaving
+  dead half-rows mid-report.
+- `.insight-badge` needs `align-self: flex-start` — `card-inner` is a column flex
+  box, so inline-block badges stretch to full width without it.
+
+**Correction worth remembering:** Runway's 11 charges across "Standard / Pro /
+unlabeled" tiers initially read as plan churn. Transaction-level detail shows the
+opposite — a flat $15/mo Jan–Jun, a $16.01 prorated upgrade in June, then Pro at
+$35 in July, plus $415 of separate credit top-ups. 76% of the $1,553 AI total is
+one-off purchases, not subscriptions.
+
+---
+
 ## Next Steps (v3)
 - Test end-to-end with all 5 views after parser fixes
 - Tune PDF parser for JH 401k and Robinhood statement formats

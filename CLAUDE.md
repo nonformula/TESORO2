@@ -79,7 +79,8 @@ public/
   mortgage.html       ← standalone mortgage report (Newrez loan)
   spending-march.html ← standalone Citi March 2026 spending report
   spending-amex.html  ← standalone Amex spending report
-  spending-ytd.html   ← standalone Citi YTD spending report
+  spending-ytd.html   ← standalone Citi YTD spending report (Jan–May)
+  spending-ytd-july.html ← standalone Citi YTD spending report (Jan–Jul)
   net-worth.html      ← standalone net worth report
   investments.html    ← standalone investments report
   style-guide.html    ← interactive design system reference
